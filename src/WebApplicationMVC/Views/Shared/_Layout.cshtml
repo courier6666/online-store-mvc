@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset=utf-8 />
+    <title>Store</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href ="/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div id="nav-bar" class="bg-white text-black p-4 border position-fixed w-100">
+        @await Component.InvokeAsync("NavigationBar")
+    </div>
+    <div id="main-body" class="row">
+        @RenderBody()
+    </div>
+    <script>
+        heightNavBar = document.getElementById("nav-bar").clientHeight;
+        mainBody = document.getElementById("main-body");
+        mainBody.style.paddingTop = heightNavBar + "px";
+    </script>
+</body>
+</html>

@@ -131,6 +131,7 @@
                         <th>Description</th>
                         <th>Price</th>
                         <th>Date of creation</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -142,11 +143,18 @@
                             <td>@product.Description</td>
                             <td>@product.Price.ToString("c")</td>
                             <td>@product.DateOfCreation.ToString("U")</td>
+                            <td>
+                                <form asp-controller="Cart" asp-action="AddToCart">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <button type="submit" class="btn text-white bg-black">
+                                        Add to cart
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>

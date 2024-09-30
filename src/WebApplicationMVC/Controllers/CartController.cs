@@ -22,5 +22,19 @@ namespace Store.WebApplicationMVC.Controllers
             };
             return View(cartViewModel);
         }
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(Guid productId)
+        {
+            var product = await _productService.GetByIdAsync(productId);
+            _cartService.AddItem(product, 1);
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromCart(Guid productId)
+        {
+            var product = await _productService.GetByIdAsync(productId);
+            _cartService.RemoveItem(product);
+            return RedirectToAction("Index");
+        }
     }
 }

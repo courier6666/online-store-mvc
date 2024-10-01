@@ -12,6 +12,7 @@ using Store.WebApplicationMVC.Data;
 using Store.Application.Factories;
 using Store.Persistence.Main.Factories;
 using Store.WebApplicationMVC.Services;
+using Store.WebApplicationMVC.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 builder.Services.AddScoped<IUnitOfWork, EfCoreUnitOfWork>();
 

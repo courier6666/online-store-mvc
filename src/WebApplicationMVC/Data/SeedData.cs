@@ -43,7 +43,7 @@ namespace Store.WebApplicationMVC.Data
         {
             using var scope = app.ApplicationServices.CreateScope();
             using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
+           
             foreach (var role in Roles.GetAllRoles().ToArray())
             {
                 if (!await roleManager.RoleExistsAsync(role))

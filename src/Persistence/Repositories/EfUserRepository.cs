@@ -43,13 +43,6 @@ namespace Store.Persistence.Main.Repositories
             _context = null;
         }
 
-        public async Task<IUser> FindUserByLoginAsync(string login)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Login.Equals(login));
-            user.Roles = await _userManager.GetRolesAsync(user);
-            return user;
-        }
-
         public async Task<IEnumerable<IUser>> GetAllAsync()
         {
             return await _context.Users.ToListAsync();

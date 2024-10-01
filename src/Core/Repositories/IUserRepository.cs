@@ -12,11 +12,6 @@ namespace Store.Domain.Repositories
 {
     public interface IUserRepository : IRepository<IUser, Guid>
     {
-        /// <summary>
-        /// Find user <typeparamref name="User"/> by login.
-        /// </summary>
-        /// <param name="login">Login of searched user.</param>
-        /// <returns>Found user <typeparamref name="User"/> by login</returns>
-        Task<IUser> FindUserByLoginAsync(string login);
+
     }
 }

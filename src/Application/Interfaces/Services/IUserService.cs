@@ -15,6 +15,7 @@ namespace Store.Application.Interfaces.Services
     {
         Task<Guid> RegisterAsync(UserRegistrationDto userRegistrationData);
         Task<LogInResponse> LogInAsync(string login, string password);
+        Task<bool> LogOutAsync();
         Task<bool> UserWithLoginExists(string login);
     }
 }

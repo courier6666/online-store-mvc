@@ -11,6 +11,9 @@ using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
 using Store.Application.Factories;
+using Store.Application.Interfaces.IdentityManagers;
+using System.Runtime.InteropServices;
+using System.Net.WebSockets;
 
 namespace Store.Application.Services
 {
@@ -22,6 +25,9 @@ namespace Store.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICustomMapper _customMapper;
         private readonly IUserFactory _userFactory;
+        private readonly IUserManager _userManager;
+        private readonly ISignInManager _signInManager;
+        private readonly IRoleManager _roleManager;
         public UserService(IUnitOfWork unitOfWork, ICustomMapper customMapper, IUserFactory userFactory)
         {
             _unitOfWork = unitOfWork;
@@ -39,28 +45,43 @@ namespace Store.Application.Services
         {
             try
             {
-                _unitOfWork.BeginTransaction();
-                var foundUser = await _unitOfWork.UserRepository.FindUserByLoginAsync(login);
-                await _unitOfWork.CommitAsync();
+                var foundUser = await _userManager.FindByNameAsync(login);
 
                 if (foundUser == null)
                     return new LogInResponse() { UserId = null, LoginFound = false, IsPasswordCorrect = false };
 
-                if (!foundUser.PasswordHash.Equals(password))
+                if (await _userManager.CheckPasswordAsync(foundUser, password))
                     return new LogInResponse() { UserId = null, LoginFound = true, IsPasswordCorrect = false };
 
-                string[] userRoles = foundUser.Roles.ToString().Replace(" ", "").Split(",");
+                var result = await _signInManager.SignInPasswordAsync(foundUser, password);
+                if(!result)
+                {
+                    return new LogInResponse() { SignedIn = false, LoginFound = true, IsPasswordCorrect = true };
+                }
 
-                return new LogInResponse() { UserId = foundUser.Id, LoginFound = true, IsPasswordCorrect = true, UserRoles = userRoles };
+                return new LogInResponse() { UserId = foundUser.Id,SignedIn = true, LoginFound = true, IsPasswordCorrect = true, UserRoles = (await _userManager.GetRolesAsync(foundUser)).ToArray()};
 
             }
             catch (Exception e)
             {
-                _unitOfWork.Rollback();
-                throw new InvalidOperationException("Operation to find user by login failed!", innerException: e);
+                throw new InvalidOperationException("Operation to sign in failed!", innerException: e);
             }
 
         }
+
+        public async Task<bool> LogOutAsync()
+        {
+            try
+            {
+                return await _signInManager.SignOutAsync();
+            }
+            catch(Exception e)
+            {
+                _unitOfWork.Rollback();
+                throw new InvalidOperationException("Operation to log out failed!", innerException: e);
+            }
+        }
+
         /// <summary>
         /// Registers a new user.
         /// </summary>
@@ -69,20 +90,16 @@ namespace Store.Application.Services
         /// <exception cref="InvalidOperationException">Thrown when the operation to register a new user fails.</exception>
         public async Task<Guid> RegisterAsync(UserRegistrationDto userRegistrationData)
         {
-
-            _unitOfWork.BeginTransaction();
             IUser newUser = _userFactory.CreateNewEmptyUser();
             _customMapper.MapToExisting(userRegistrationData, ref newUser);
-            newUser.Roles = new[] { Roles.User }.ToList();
             try
             {
-                _unitOfWork.UserRepository.Add(newUser);
-                await _unitOfWork.CommitAsync();
+                await _userManager.CreateAsync(newUser, userRegistrationData.PasswordHash);
+                await _userManager.AddToRoleAsync(newUser, Roles.User);
                 return newUser.Id;
             }
             catch (Exception e)
             {
-                _unitOfWork.Rollback();
                 throw new InvalidOperationException("Operation to register new user failed!", innerException: e);
             }
 
@@ -99,13 +116,11 @@ namespace Store.Application.Services
             bool result;
             try
             {
-                _unitOfWork.BeginTransaction();
-                result = (await _unitOfWork.UserRepository.FindUserByLoginAsync(login)) != null;
-                await _unitOfWork.CommitAsync();
+                var foundUser = await _userManager.FindByNameAsync(login);
+                result = foundUser != null;
             }
             catch (Exception e)
             {
-                _unitOfWork.Rollback();
                 throw new InvalidOperationException("Operation to find user by login failed!", innerException: e);
             }
 

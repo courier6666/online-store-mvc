@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Store.Application.Interfaces.IdentityManagers;
+using Store.Application.Responses;
 using Store.Domain.Entities.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,15 @@ namespace Store.Persistence.Main.Identity
             return await _userManager.CheckPasswordAsync(user as AppUser, password);
         }
 
-        public async Task<bool> CreateAsync(IUser user, string password)
+        public async Task<CreateUserResponse> CreateAsync(IUser user, string password)
         {
-            return (await _userManager.CreateAsync(user as AppUser, password)).Succeeded;
+            var result = await _userManager.CreateAsync(user as AppUser, password);
+            return new CreateUserResponse()
+            {
+                Success = result.Succeeded,
+                Errors = result.Succeeded ? null : result.Errors.Select(e => e.Description).ToArray(),
+            };
         }
-
         public async Task<IUser> FindByNameAsync(string username)
         {
             return await _userManager.FindByNameAsync(username);

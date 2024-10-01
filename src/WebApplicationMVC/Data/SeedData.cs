@@ -2,6 +2,7 @@
 using Store.Domain.Entities;
 using Store.Domain.Entities.Model;
 using Store.Persistence.Main.DatabaseContexts;
+using Store.Persistence.Main.Identity;
 
 namespace Store.WebApplicationMVC.Data
 {

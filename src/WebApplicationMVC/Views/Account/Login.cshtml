@@ -1,0 +1,25 @@
+﻿@model LoginViewModel
+
+<div class="row">
+    <div class="col mx-auto" style="max-width:30%">
+        <h3>Login</h3>
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="@Model.ReturnUrl" />
+            <div class="form-group m-1">
+                <label asp-for="@Model.Name" class="control-label"></label>
+                <input asp-for="@Model.Name" class="form-control" />
+                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group m-1">
+                <label asp-for="@Model.Password" class="control-label"></label>
+                <input asp-for="@Model.Password" type="password" class="form-control" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group m-1">
+                <input class="btn btn-outline-success float right" type="submit" value="Log in" />
+                <a class="btn btn-outline-secondary" href="@Model.ReturnUrl">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

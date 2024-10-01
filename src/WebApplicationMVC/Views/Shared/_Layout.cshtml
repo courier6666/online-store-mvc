@@ -16,9 +16,15 @@
         @RenderBody()
     </div>
     <script>
-        heightNavBar = document.getElementById("nav-bar").clientHeight;
+        navBar = document.getElementById("nav-bar");
         mainBody = document.getElementById("main-body");
-        mainBody.style.paddingTop = heightNavBar + "px";
+        mainBody.style.paddingTop = navBar.clientHeight + "px";
+        function onWindowChangeSize()
+        {
+            height = navBar.clientHeight;
+            mainBody.style.paddingTop = height + "px";
+        }
+        setInterval(onWindowChangeSize, 250);
     </script>
 </body>
 </html>

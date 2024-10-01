@@ -13,6 +13,7 @@ using Store.Application.Factories;
 using Store.Persistence.Main.Factories;
 using Store.WebApplicationMVC.Services;
 using Store.WebApplicationMVC.Identity;
+using Store.Application.Interfaces.IdentityManagers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<IUserContext, UserContext>();
+builder.Services.AddScoped<IUserManager, UserManagerAdapter>();
+builder.Services.AddScoped<IRoleManager, RoleManagerAdapter>();
+builder.Services.AddScoped<ISignInManager, SignInManagerAdapter>();
 
 builder.Services.AddScoped<IUnitOfWork, EfCoreUnitOfWork>();
 
@@ -37,6 +41,7 @@ builder.Services.AddScoped<ICashDepositService, CashDepositService>();
 builder.Services.AddScoped<IOrderHistoryService, OrderHistoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserOrderService, UserOrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService>(SessionCartService.GetCart);
 
 builder.Services.AddMemoryCache();
@@ -51,9 +56,10 @@ if (app.Environment.IsProduction())
 
 app.UseSession();
 app.UseStaticFiles();
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRouting();
 
 app.MapControllerRoute(
     name: "pagination",

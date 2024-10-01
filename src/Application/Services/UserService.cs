@@ -28,11 +28,15 @@ namespace Store.Application.Services
         private readonly IUserManager _userManager;
         private readonly ISignInManager _signInManager;
         private readonly IRoleManager _roleManager;
-        public UserService(IUnitOfWork unitOfWork, ICustomMapper customMapper, IUserFactory userFactory)
+        public UserService(IUnitOfWork unitOfWork, ICustomMapper customMapper, IUserFactory userFactory,
+            IUserManager userManager, ISignInManager signInManager, IRoleManager roleManager)
         {
             _unitOfWork = unitOfWork;
             _customMapper = customMapper;
             _userFactory = userFactory;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
         }
         /// <summary>
         /// Authenticates a user by their login and password.
@@ -45,6 +49,7 @@ namespace Store.Application.Services
         {
             try
             {
+                
                 var foundUser = await _userManager.FindByNameAsync(login);
 
                 if (foundUser == null)
@@ -88,15 +93,18 @@ namespace Store.Application.Services
         /// <param name="userRegistrationData">The data for the new user.</param>
         /// <returns>The unique identifier of the newly registered user.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the operation to register a new user fails.</exception>
-        public async Task<Guid> RegisterAsync(UserRegistrationDto userRegistrationData)
+        public async Task<CreateUserResponse> RegisterAsync(UserRegistrationDto userRegistrationData)
         {
             IUser newUser = _userFactory.CreateNewEmptyUser();
             _customMapper.MapToExisting(userRegistrationData, ref newUser);
             try
             {
-                await _userManager.CreateAsync(newUser, userRegistrationData.PasswordHash);
+                var response = await _userManager.CreateAsync(newUser, userRegistrationData.PasswordHash);
                 await _userManager.AddToRoleAsync(newUser, Roles.User);
-                return newUser.Id;
+                if (response.Success)
+                    response.User = newUser;
+
+                return response;
             }
             catch (Exception e)
             {
@@ -110,22 +118,17 @@ namespace Store.Application.Services
         /// <param name="login">The login to check.</param>
         /// <returns><c>true</c> if a user with the specified login exists; otherwise, <c>false</c>.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the operation to find the user by login fails.</exception>
-        public async Task<bool> UserWithLoginExists(string login)
+        public async Task<IUser> FindUserByLogin(string login)
         {
-
-            bool result;
             try
             {
                 var foundUser = await _userManager.FindByNameAsync(login);
-                result = foundUser != null;
+                return foundUser;
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException("Operation to find user by login failed!", innerException: e);
             }
-
-            return result;
-
         }
     }
 }

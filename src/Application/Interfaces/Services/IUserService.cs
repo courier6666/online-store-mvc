@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Store.Application.DataTransferObjects;
 using Store.Application.Responses;
+using Store.Domain.Entities.Interfaces;
 
 namespace Store.Application.Interfaces.Services
 {
@@ -13,9 +14,9 @@ namespace Store.Application.Interfaces.Services
     /// </summary>
     public interface IUserService
     {
-        Task<Guid> RegisterAsync(UserRegistrationDto userRegistrationData);
+        Task<CreateUserResponse> RegisterAsync(UserRegistrationDto userRegistrationData);
         Task<LogInResponse> LogInAsync(string login, string password);
         Task<bool> LogOutAsync();
-        Task<bool> UserWithLoginExists(string login);
+        Task<IUser> FindUserByLogin(string login);
     }
 }

@@ -20,7 +20,10 @@ namespace Store.Persistence.Main.Identity
         {
             return (await _signInManager.PasswordSignInAsync(user as AppUser, password, false, false)).Succeeded;
         }
-
+        public async Task SignInAsync(IUser user)
+        {
+            await _signInManager.SignInAsync(user as AppUser, false);
+        }
         public async Task<bool> SignOutAsync()
         {
             await _signInManager.SignOutAsync();

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Store.Application.Interfaces.Services;
+using Store.Domain.Entities.Interfaces;
+using Store.WebApplicationMVC.ViewModel;
 
 namespace Store.WebApplicationMVC.Components
 {
@@ -7,13 +9,18 @@ namespace Store.WebApplicationMVC.Components
     public class NavigationBarViewComponent : ViewComponent
     {
         private readonly IProductService _productService;
-        public NavigationBarViewComponent(IProductService productService)
+        private readonly IUserContext _userContext;
+        public NavigationBarViewComponent(IProductService productService, IUserContext userContext)
         {
             _productService = productService;
+            _userContext = userContext;
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View(await _productService.GetAllCategoriesAsync());
+            return View(new NavBarViewModel()
+            {
+                UserContext = _userContext,
+            });
         }
     }
 }

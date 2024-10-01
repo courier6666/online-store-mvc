@@ -1,4 +1,4 @@
-﻿@model IEnumerable<string>
+﻿@model NavBarViewModel
 
 @{
     string selectedPage = ViewBag.SelectedPage;
@@ -28,6 +28,23 @@
                 </div>
                 <div class="col-auto p-0 border border-top-0 border-bottom-0">
                     <a class="btn p-0 pe-2 ps-2" href="#">Contact us</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="row">
+                <div class="col-auto p-0 border border-top-0 border-bottom-0">
+                    @if(!Model.UserContext.IsAuthenticated)
+                    {
+                        <a class="btn p-0 pe-2 ps-2" asp-controller="Account" asp-action="Login">Sign In</a>
+                    }
+                    else
+                    {
+                        <a class="btn p-0 pe-2 ps-2" asp-controller="Account" asp-action="Logout">Logout</a>
+                    }
+                </div>
+                <div class="col-auto p-0 border border-top-0 border-bottom-0">
+                    <a class="btn p-0 pe-2 ps-2" asp-controller="Account" asp-action="Register">Register</a>
                 </div>
             </div>
         </div>

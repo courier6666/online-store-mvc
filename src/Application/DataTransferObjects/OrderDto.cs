@@ -13,5 +13,6 @@ namespace Store.Application.DataTransferObjects
         public string Status { get; set; }
         public Guid OrderAuthorId { get; set; }
         public ICollection<ProductDetailsForOrderDto> ProductDetails { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

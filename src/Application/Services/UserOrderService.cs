@@ -9,6 +9,8 @@ using Store.Application.Interfaces.Services;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
+using Store.Domain.PagedLists;
+using Store.Domain.StringToEnumConverter;
 
 namespace Store.Application.Services
 {
@@ -308,6 +310,8 @@ namespace Store.Application.Services
                         throw new InvalidOperationException($"Product by id '{product.Product.Id.Value}' not found!");
 
                     OrderProductDetail productDetail = _customMapper.Map<ProductDetailsDto, OrderProductDetail>(product);
+                    productDetail.Product = null;
+
                     _unitOfWork.OrderRepository.AddOrderDetailsToOrder(createdOrder.Id, productDetail);
                 }
 
@@ -318,6 +322,65 @@ namespace Store.Application.Services
             {
                 _unitOfWork.Rollback();
                 throw new InvalidOperationException("Failed to create order!", innerException: e);
+            }
+        }
+
+        public async Task<PagedList<OrderDto>> GetAllOrdersForUserAsync(Guid userId, int page, int pageSize)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                var pagedOrders = await _unitOfWork.OrderRepository.GetPagedListFilterAndOrderAsync(page, pageSize, o => o.OrderAuthorId == userId, o => o.CreatedDate);
+                await _unitOfWork.CommitAsync();
+                return _customMapper.MapPagedList<Order, OrderDto>(pagedOrders);
+            }
+            catch(Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
+
+        public async Task<PagedList<OrderDto>> GetAllOrdersOfStatusForUserAsync(Guid userId, int page, int pageSize, string status)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+                OrderStatus? statusParsed = StringToEnumConverter.ConvertStringToEnumValue<OrderStatus>(status);
+                if(statusParsed == null)
+                    throw new ArgumentException($"Unknown status provided! No such status: '{status}'", nameof(status));
+                
+                var pagedOrders = await _unitOfWork.OrderRepository.GetPagedListFilterAndOrderAsync(page,
+                    pageSize,
+                    o => o.OrderAuthorId == userId && o.Status == statusParsed,
+                    o => o.CreatedDate);
+
+                await _unitOfWork.CommitAsync();
+                return _customMapper.MapPagedList<Order, OrderDto>(pagedOrders);
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
+
+        public async Task<OrderDto> GetOrderAsync(Guid orderId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+                var order = await _unitOfWork.OrderRepository.GetOrderByIdIncludingOrderAndProductDetailsAsync(orderId);
+
+                await _unitOfWork.CommitAsync();
+                return _customMapper.Map<Order, OrderDto>(order);
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
             }
         }
     }

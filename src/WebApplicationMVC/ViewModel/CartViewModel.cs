@@ -6,5 +6,6 @@ namespace Store.WebApplicationMVC.ViewModel
     {
         public decimal TotalPrice { get; set; }
         public IEnumerable<ProductDetailsDto> ProductDetails { get; set; }
+        public bool IsUserLoggedIn { get; set; }
     }
 }

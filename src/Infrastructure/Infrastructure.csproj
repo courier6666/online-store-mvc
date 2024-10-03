@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>Store..$(MSBuildProjectName)</AssemblyName>
-    <RootNamespace>Store..$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <AssemblyName>Store.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>Store.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 

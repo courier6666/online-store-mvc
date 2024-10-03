@@ -55,7 +55,7 @@ namespace Store.Application.Services
                 if (foundUser == null)
                     return new LogInResponse() { UserId = null, LoginFound = false, IsPasswordCorrect = false };
 
-                if (await _userManager.CheckPasswordAsync(foundUser, password))
+                if (!(await _userManager.CheckPasswordAsync(foundUser, password)))
                     return new LogInResponse() { UserId = null, LoginFound = true, IsPasswordCorrect = false };
 
                 var result = await _signInManager.SignInPasswordAsync(foundUser, password);

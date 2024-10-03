@@ -134,32 +134,46 @@ namespace Store.Persistence.Main.Repositories
 
         public async Task<PagedList<Order>> GetPagedListAsync(int page, int pageSize)
         {
-            return await PagedListCreator.CreateAsync(_context.Orders, page, pageSize);
+            return await PagedListCreator.CreateAsync(_context.Orders.
+                Include(o => o.ProductDetails).
+                    ThenInclude(pd => pd.Product),
+                page,
+                pageSize);
         }
 
         public async Task<PagedList<Order>> GetPagedListFilterAsync(int page, int pageSize, Expression<Func<Order, bool>> filter)
         {
-            return await PagedListCreator.CreateAsync(_context.Orders.Where(filter), page, pageSize);
+            return await PagedListCreator.CreateAsync(_context.Orders.
+                Include(o => o.ProductDetails).
+                    ThenInclude(pd => pd.Product).Where(filter), page, pageSize);
         }
 
         public async Task<PagedList<Order>> GetPagedListFilterAndOrderAsync<TOrderBy>(int page, int pageSize, Expression<Func<Order, bool>> filter, Expression<Func<Order, TOrderBy>> selector)
         {
-            return await PagedListCreator.CreateAsync(_context.Orders.Where(filter).OrderBy(selector), page, pageSize);
+            return await PagedListCreator.CreateAsync(_context.Orders.
+                Include(o => o.ProductDetails).
+                    ThenInclude(pd => pd.Product).Where(filter).OrderBy(selector), page, pageSize);
         }
 
         public async Task<PagedList<Order>> GetPagedListFilterAndOrderDescAsync<TOrderBy>(int page, int pageSize, Expression<Func<Order, bool>> filter, Expression<Func<Order, TOrderBy>> selector)
         {
-            return await PagedListCreator.CreateAsync(_context.Orders.Where(filter).OrderByDescending(selector), page, pageSize);
+            return await PagedListCreator.CreateAsync(_context.Orders.
+                Include(o => o.ProductDetails).
+                    ThenInclude(pd => pd.Product).Where(filter).OrderByDescending(selector), page, pageSize);
         }
 
         public async Task<PagedList<Order>> GetPagedListOrderAsync<TOrderBy>(int page, int pageSize, Expression<Func<Order, TOrderBy>> selector)
         {
-            return await PagedListCreator.CreateAsync(_context.Orders.OrderBy(selector), page, pageSize);
+            return await PagedListCreator.CreateAsync(_context.Orders.
+                Include(o => o.ProductDetails).
+                    ThenInclude(pd => pd.Product).OrderBy(selector), page, pageSize);
         }
 
         public async Task<PagedList<Order>> GetPagedListOrderDescAsync<TOrderBy>(int page, int pageSize, Expression<Func<Order, TOrderBy>> selector)
         {
-            return await PagedListCreator.CreateAsync(_context.Orders.OrderByDescending(selector).AsQueryable(), page, pageSize);
+            return await PagedListCreator.CreateAsync(_context.Orders.
+                Include(o => o.ProductDetails).
+                    ThenInclude(pd => pd.Product).OrderByDescending(selector).AsQueryable(), page, pageSize);
         }
     }
 }

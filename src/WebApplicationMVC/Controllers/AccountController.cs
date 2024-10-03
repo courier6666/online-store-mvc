@@ -12,11 +12,9 @@ namespace Store.WebApplicationMVC.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        private readonly ICustomMapper _customMapper;
-        public AccountController(IUserService userService, ICustomMapper customMapper)
+        public AccountController(IUserService userService)
         {
             _userService = userService;
-            _customMapper = customMapper;
         }
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = "/")
@@ -59,15 +57,34 @@ namespace Store.WebApplicationMVC.Controllers
             return this.View(loginViewModel);
         }
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl)
+        public IActionResult Register(string returnUrl = "/")
         {
-            return View(new RegistrationViewModel());
+            return View(new RegistrationViewModel()
+            {
+                ReturnUrl = returnUrl,
+            });
         }
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromForm]RegistrationViewModel registrationViewModel)
         {
-            var userRegistrationDto = _customMapper.Map<RegistrationViewModel, UserRegistrationDto>(registrationViewModel);
+            var userRegistrationDto = new UserRegistrationDto()
+            {
+                FirstName = registrationViewModel.FirstName,
+                LastName = registrationViewModel.LastName,
+                Email = registrationViewModel.Email,
+                Address = new AddressDto()
+                {
+                    Country = registrationViewModel.Country,
+                    City = registrationViewModel.City,
+                    State = registrationViewModel.State,
+                    Street = registrationViewModel.Street,
+                },
+                Birthday = DateOnly.FromDateTime(registrationViewModel.Birthday.Value),
+                Login = registrationViewModel.Login,
+                PasswordHash = registrationViewModel.PasswordHash,
+                PhoneNumber = registrationViewModel.PhoneNumber,
+            };
             var registerResponse = await _userService.RegisterAsync(userRegistrationDto);
             if(registerResponse.Success)
             {
@@ -77,7 +94,6 @@ namespace Store.WebApplicationMVC.Controllers
 
             return View(registrationViewModel);
         }
-        [HttpPost]
         public async Task<IActionResult> LogOut()
         {
             await _userService.LogOutAsync();

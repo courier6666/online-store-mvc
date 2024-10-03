@@ -18,7 +18,7 @@ namespace Store.WebApplicationMVC.Identity
             .IsAuthenticated ??
         throw new ApplicationException("User context is unavailable");
 
-        public Guid UserId => _contextAccessor
+        public Guid? UserId => _contextAccessor
             .HttpContext?
             .User
             .GetUserId() ??

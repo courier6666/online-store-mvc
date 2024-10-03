@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.Interfaces.Services;
+using Store.Domain.Entities.Interfaces;
 using Store.WebApplicationMVC.ViewModel;
 
 namespace Store.WebApplicationMVC.Controllers
@@ -9,10 +10,12 @@ namespace Store.WebApplicationMVC.Controllers
     {
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
-        public CartController(ICartService cartService, IProductService productService)
+        private readonly IUserContext _userContext;
+        public CartController(ICartService cartService, IProductService productService, IUserContext userContext)
         {
             _cartService = cartService;
             _productService = productService;
+            _userContext = userContext;
         }
         public IActionResult Index()
         {
@@ -20,6 +23,7 @@ namespace Store.WebApplicationMVC.Controllers
             {
                 TotalPrice = _cartService.ComputeTotalValue(),
                 ProductDetails = _cartService.Lines,
+                IsUserLoggedIn = _userContext.IsAuthenticated && _userContext.UserId != null
             };
             return View(cartViewModel);
         }

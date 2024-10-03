@@ -14,7 +14,6 @@ using Store.Persistence.Main.Factories;
 using Store.WebApplicationMVC.Services;
 using Store.WebApplicationMVC.Identity;
 using Store.Application.Interfaces.IdentityManagers;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
@@ -89,6 +88,12 @@ app.MapControllerRoute(
     name: "paginationPriciest",
     pattern: "Products/Priciest/Page{page:int}",
     defaults: new { Controller = "Home", Action = "Index", page = 1, order = "priciest" }
+    );
+
+app.MapControllerRoute(
+    name: "paginationOrder",
+    pattern:"Orders/Page{page:int}",
+    defaults: new { Controller = "Order", Action = "Index", page = 1}
     );
 
 app.MapDefaultControllerRoute();

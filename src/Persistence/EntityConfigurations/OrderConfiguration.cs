@@ -23,13 +23,15 @@ namespace Store.Persistence.Main.EntityConfigurations
                 HasDefaultValueSql("getdate()");
 
             builder.Property(entity => entity.CreatedBy).
-                IsRequired(false);
+                IsRequired(false).
+                HasMaxLength(128);
 
             builder.Property(entity => entity.ModifiedDate).
                 IsRequired(false);
 
             builder.Property(entity => entity.ModifiedBy).
-                IsRequired(false);
+                IsRequired(false).
+                HasMaxLength(128);
 
             builder.Property(entity => entity.Version).
                 IsRequired(false).

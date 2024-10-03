@@ -1,0 +1,36 @@
+﻿@model OrdersListViewModel
+
+@{
+    var currentRoute = "paginationOrder";
+}
+
+<div class="m-2">
+    <h2 class="text-center">Orders</h2>
+    <div page-model="@Model.PagingInfo" page-route=@currentRoute
+         page-class="btn"
+         page-left-symbol="fa-solid fa-angle-left black"
+         page-right-symbol="fa-solid fa-angle-right"></div>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Status</th>
+                <th>Total price</th>
+                <th>Created at</th>
+                <th>More</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.Status</td>
+                    <td>@order.TotalPrice.ToString()</td>
+                    <td>@order.CreatedDate.ToString("g")</td>
+                    <td><a asp-controller="Order" asp-action="Details" asp-route-orderId = "@order.Id" class="btn border text-white bg-black">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

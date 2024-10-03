@@ -34,7 +34,8 @@ namespace Store.Infrastructure.Mappers
                 cfg.CreateMap<AddressDto, Address>();
                 cfg.CreateMap<UserRegistrationDto, IUser>().ForMember(u => u.Address, 
                     o => o.MapFrom(udto => udto.Address)).
-                    ForMember(u => u.Birthday, o => o.MapFrom(udto => udto.Birthday));
+                    ForMember(u => u.Birthday, o => o.MapFrom(udto => udto.Birthday)).
+                    ForMember(udto => udto.PasswordHash, opt => opt.Ignore());
                 cfg.CreateMap<ProductDto, Product>();
                 cfg.CreateMap<Product, ProductDto>().
                     ForMember(p => p.DateOfCreation, o => o.MapFrom(p => p.CreatedDate));

@@ -33,13 +33,15 @@ namespace Store.Persistence.Main.EntityConfigurations
                 HasDefaultValueSql("getdate()");
 
             builder.Property(entity => entity.CreatedBy).
-                IsRequired(false);
+                IsRequired(false).
+                HasMaxLength(128);
 
             builder.Property(entity => entity.ModifiedDate).
                 IsRequired(false);
 
             builder.Property(entity => entity.ModifiedBy).
-                IsRequired(false);
+                IsRequired(false).
+                HasMaxLength(128);
 
             builder.Property(entity => entity.Version).
                 IsRequired(false).
@@ -74,8 +76,8 @@ namespace Store.Persistence.Main.EntityConfigurations
             builder.HasIndex(user => user.Login).IsUnique();
 
             builder.Property(user => user.PasswordHash).
-                HasMaxLength(16).
-                IsRequired();
+                IsRequired().
+                HasMaxLength(128);
 
             builder.HasMany(user => user.Orders).
                 WithOne(order => order.OrderAuthor as AppUser);

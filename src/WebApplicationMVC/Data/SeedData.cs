@@ -12,8 +12,6 @@ namespace Store.WebApplicationMVC.Data
         {
             using var scope = app.ApplicationServices.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
 
             if (!context.Products.Any())
             {

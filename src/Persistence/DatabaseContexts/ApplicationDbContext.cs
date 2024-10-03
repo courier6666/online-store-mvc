@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define MIGRATION
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,6 +19,17 @@ namespace Store.Persistence.Main.DatabaseContexts
 {
     public class ApplicationDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
+# if MIGRATION
+        public ApplicationDbContext()
+        {
+            
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer("Data Source=(localDb)\\MSSQLLocalDB;Initial Catalog=StoreDb;Integrated Security=True;Connect Timeout=30;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        }
+# endif
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

@@ -1,12 +1,4 @@
-﻿using Store.Domain.PagedLists;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Domain.Repositories
+﻿namespace Store.Domain.Repositories
 {
     /// <summary>
     /// Used for basic repository operations.
@@ -49,6 +41,6 @@ namespace Store.Domain.Repositories
         /// </summary>
         /// <param name="id">Id of entity to find</param>
         /// <returns>Entity of type <typeparamref name="TObject"/></returns>
-        Task<TObject> GetByIdAsync(TObjectId id);       
+        Task<TObject> GetByIdAsync(TObjectId id);
     }
 }

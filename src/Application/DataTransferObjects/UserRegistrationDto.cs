@@ -1,11 +1,4 @@
-﻿using Store.Domain.Entities.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Application.DataTransferObjects
+﻿namespace Store.Application.DataTransferObjects
 {
     public class UserRegistrationDto
     {

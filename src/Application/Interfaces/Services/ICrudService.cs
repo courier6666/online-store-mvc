@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Application.Interfaces.Services
+﻿namespace Store.Application.Interfaces.Services
 {
     public interface ICrudService<TModel> where TModel : class
     {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Store.Application.Interfaces.Services;
 using Store.Domain.Entities.Interfaces;
 using Store.WebApplicationMVC.ViewModel;

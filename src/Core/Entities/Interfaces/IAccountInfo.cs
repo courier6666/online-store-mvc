@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Domain.Entities.Interfaces
+﻿namespace Store.Domain.Entities.Interfaces
 {
     /// <summary>
     /// Interface that represents account info of user account.

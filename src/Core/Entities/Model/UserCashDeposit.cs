@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace Store.Domain.Entities.Model
 {
@@ -16,7 +11,7 @@ namespace Store.Domain.Entities.Model
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override void DepositAmount(decimal moneyAmount)
         {
-            if(moneyAmount < 0m)
+            if (moneyAmount < 0m)
                 throw new ArgumentOutOfRangeException(nameof(moneyAmount), $"Amount of money to deposit must not be negative! Provided money amount: {moneyAmount.ToString("C", new CultureInfo("uk-UA", false))}");
 
             CurrentMoneyBalance += moneyAmount;

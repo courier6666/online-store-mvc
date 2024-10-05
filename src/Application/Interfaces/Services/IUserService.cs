@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Store.Application.DataTransferObjects;
+﻿using Store.Application.DataTransferObjects;
 using Store.Application.Responses;
 using Store.Domain.Entities.Interfaces;
 

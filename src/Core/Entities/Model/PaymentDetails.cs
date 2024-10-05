@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Domain.Entities.Model
+﻿namespace Store.Domain.Entities.Model
 {
     /// <summary>
     /// Used for describing payment of order.
@@ -16,6 +9,6 @@ namespace Store.Domain.Entities.Model
         public Guid OrderId { get; set; }
         public virtual Order Order { get; set; }
         public Guid CashDepositId { get; set; }
-        public virtual CashDeposit CashDeposit { get; set;}
+        public virtual CashDeposit CashDeposit { get; set; }
     }
 }

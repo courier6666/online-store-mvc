@@ -11,10 +11,10 @@ namespace Store.WebApplicationMVC.Validation
         public int Age { get; }
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            
+
             DateTime dateOfBirth = DateTime.UtcNow;
 
-            if(value is DateOnly date)
+            if (value is DateOnly date)
             {
                 dateOfBirth = date.ToDateTime(TimeOnly.MinValue);
             }

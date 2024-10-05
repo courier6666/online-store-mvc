@@ -2,11 +2,6 @@
 using Store.Domain.Entities.Model;
 using Store.Persistence.Main.DatabaseContexts;
 using Store.Persistence.Main.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersistanceTests
 {

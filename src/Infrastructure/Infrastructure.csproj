@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Store.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>Store.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Domain.Entities
+﻿namespace Store.Domain.Entities
 {
     /// <summary>
     /// Enum that represents current status of order.

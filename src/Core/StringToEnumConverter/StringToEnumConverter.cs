@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Store.Domain.Entities;
-
-namespace Store.Domain.StringToEnumConverter
+﻿namespace Store.Domain.StringToEnumConverter
 {
     /// <summary>
     /// Static class for converting string to enum value.
@@ -21,7 +14,7 @@ namespace Store.Domain.StringToEnumConverter
         public static TEnum? ConvertStringToEnumValue<TEnum>(string str) where TEnum : struct
         {
             var statuses = Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
-            foreach(var status in statuses)
+            foreach (var status in statuses)
             {
                 if (status.ToString() == str)
                     return status;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Model;
 using Store.Persistence.Main.DatabaseContexts;
-using Store.Persistence.Main.Identity;
 
 namespace Store.WebApplicationMVC.Data
 {
@@ -12,6 +12,8 @@ namespace Store.WebApplicationMVC.Data
         {
             using var scope = app.ApplicationServices.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            context.Database.Migrate();
 
             if (!context.Products.Any())
             {
@@ -42,7 +44,7 @@ namespace Store.WebApplicationMVC.Data
         {
             using var scope = app.ApplicationServices.CreateScope();
             using var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-           
+
             foreach (var role in Roles.GetAllRoles().ToArray())
             {
                 if (!await roleManager.RoleExistsAsync(role))

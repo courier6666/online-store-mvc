@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Services;
 using Store.Domain.Entities.Interfaces;
 using Store.WebApplicationMVC.Models;
@@ -24,15 +23,15 @@ namespace Store.WebApplicationMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Index(int page = 1, string? orderStatus = null)
         {
-            if(!_userContext.IsAuthenticated || _userContext.UserId == null)
+            if (!_userContext.IsAuthenticated || _userContext.UserId == null)
             {
                 return View("Error");
             }
 
             var orders = orderStatus == null ?
-                await _userOrderService.GetAllOrdersForUserAsync(_userContext.UserId.Value, 1, PageSize) : 
+                await _userOrderService.GetAllOrdersForUserAsync(_userContext.UserId.Value, 1, PageSize) :
                 await _userOrderService.GetAllOrdersOfStatusForUserAsync(_userContext.UserId.Value, 1, PageSize, orderStatus);
-            
+
             return View(new OrdersListViewModel()
             {
                 Orders = orders,
@@ -43,6 +42,7 @@ namespace Store.WebApplicationMVC.Controllers
                     HasPreviousPage = orders.HasPreviousPage,
                     Page = page,
                     TotalCount = orders.TotalCount,
+                    TotalPages = orders.TotalPages,
                 },
                 OrderStatus = orderStatus
             });

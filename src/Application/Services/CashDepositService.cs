@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Mapper;
-using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Services;
-using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
-using System.Reflection;
 
 namespace Store.Application.Services
 {
@@ -213,7 +206,7 @@ namespace Store.Application.Services
                 await _unitOfWork.CommitAsync();
                 return cashDeposit.Id;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
                 throw ex;

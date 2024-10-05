@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Store.Application.DataTransferObjects;
-using Store.Application.DataTransferObjects;
-using Store.Application.Interfaces.Mapper;
+﻿using AutoMapper;
 using Store.Application.DataTransferObjects;
 using Store.Domain.Entities;
-using Store.Domain.Entities.Model;
 using Store.Domain.Entities.Interfaces;
+using Store.Domain.Entities.Model;
 
 namespace Store.Infrastructure.Mappers
 {
@@ -32,7 +24,7 @@ namespace Store.Infrastructure.Mappers
                 cfg.CreateMap<CashDeposit, CashDepositDto>();
                 cfg.CreateMap<Address, AddressDto>();
                 cfg.CreateMap<AddressDto, Address>();
-                cfg.CreateMap<UserRegistrationDto, IUser>().ForMember(u => u.Address, 
+                cfg.CreateMap<UserRegistrationDto, IUser>().ForMember(u => u.Address,
                     o => o.MapFrom(udto => udto.Address)).
                     ForMember(u => u.Birthday, o => o.MapFrom(udto => udto.Birthday)).
                     ForMember(udto => udto.PasswordHash, opt => opt.Ignore());
@@ -47,7 +39,7 @@ namespace Store.Infrastructure.Mappers
                     .ForMember(o => o.ProductDetails, o => o.MapFrom(o => o.ProductDetails))
                     .ForMember(o => o.Status, o => o.MapFrom(o => o.Status.ToString()));
             });
-            
+
             return new AutoMapperAdapter(mapperConfig.CreateMapper());
         }
     }

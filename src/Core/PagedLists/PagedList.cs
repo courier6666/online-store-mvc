@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 
 namespace Store.Domain.PagedLists
@@ -44,6 +39,7 @@ namespace Store.Domain.PagedLists
         /// <summary>
         /// Returns true if there is a next page.
         /// </summary>
+        public int TotalPages => (int)Math.Ceiling((double)(TotalCount) / PageSize);
         public bool HasNextPage => Page * PageSize < TotalCount;
         /// <summary>
         /// Returns true if there is a previous page.

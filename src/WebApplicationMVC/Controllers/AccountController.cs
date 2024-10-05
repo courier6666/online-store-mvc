@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.DataTransferObjects;
-using Store.Application.Interfaces.Mapper;
 using Store.Application.Interfaces.Services;
 using Store.WebApplicationMVC.ViewModel;
 
@@ -37,7 +35,7 @@ namespace Store.WebApplicationMVC.Controllers
                     if (result.LoginFound && result.IsPasswordCorrect)
                         return Redirect(loginViewModel.ReturnUrl);
 
-                    if(!result.LoginFound)
+                    if (!result.LoginFound)
                     {
                         this.ModelState.AddModelError("", "User by login not found!");
                         return View(loginViewModel);
@@ -66,7 +64,7 @@ namespace Store.WebApplicationMVC.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromForm]RegistrationViewModel registrationViewModel)
+        public async Task<IActionResult> Register([FromForm] RegistrationViewModel registrationViewModel)
         {
             var userRegistrationDto = new UserRegistrationDto()
             {
@@ -86,7 +84,7 @@ namespace Store.WebApplicationMVC.Controllers
                 PhoneNumber = registrationViewModel.PhoneNumber,
             };
             var registerResponse = await _userService.RegisterAsync(userRegistrationDto);
-            if(registerResponse.Success)
+            if (registerResponse.Success)
             {
                 var loginResponse = await _userService.LogInAsync(registerResponse.User.Login, registrationViewModel.PasswordHash);
                 return Redirect(registrationViewModel.ReturnUrl);

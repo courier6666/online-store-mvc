@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Store.Application.Interfaces.Mapper;
 using Store.Domain.PagedLists;
 
@@ -31,7 +26,7 @@ namespace Store.Infrastructure.Mappers
         /// <returns>Instance of type <typeparamref name="TDestination"/></returns>
         public TDestination Map<TSource, TDestination>(TSource source)
         {
-           return _mapper.Map<TDestination>(source);
+            return _mapper.Map<TDestination>(source);
         }
         /// <summary>
         /// Maps enumerable with <typeparamref name="TSource"/> to enumerable with <typeparamref name="TDestination"/>.
@@ -42,7 +37,7 @@ namespace Store.Infrastructure.Mappers
         /// <returns>IEnumerable of type <typeparamref name="TDestination"/></returns>
         public IEnumerable<TDestination> MapEnumerable<TSource, TDestination>(IEnumerable<TSource> source)
         {
-            return source.Select(s=>_mapper.Map<TSource, TDestination>(s));
+            return source.Select(s => _mapper.Map<TSource, TDestination>(s));
         }
         /// <summary>
         /// Maps paged list with <typeparamref name="TSource"/> to paged list with <typeparamref name="TDestination"/>.

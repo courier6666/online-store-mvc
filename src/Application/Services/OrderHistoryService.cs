@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Mapper;
-using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Services;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
-using Store.Domain.Entities.Model;
 
 namespace Store.Application.Services
 {

@@ -1,19 +1,19 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Store.Application.Factories;
+using Store.Application.Interfaces.IdentityManagers;
+using Store.Application.Interfaces.Mapper;
 using Store.Application.Interfaces.Services;
 using Store.Application.Services;
-using Store.Infrastructure.Mappers;
-using Store.Application.Interfaces.Mapper;
-using Store.Persistence.Main.DatabaseContexts;
-using Store.Persistence.Main.UnitOfWorks;
-using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities.Interfaces;
-using Store.Persistence.Main.Identity;
-using Microsoft.AspNetCore.Identity;
-using Store.WebApplicationMVC.Data;
-using Store.Application.Factories;
+using Store.Infrastructure.Mappers;
+using Store.Persistence.Main.DatabaseContexts;
 using Store.Persistence.Main.Factories;
-using Store.WebApplicationMVC.Services;
+using Store.Persistence.Main.Identity;
+using Store.Persistence.Main.UnitOfWorks;
+using Store.WebApplicationMVC.Data;
 using Store.WebApplicationMVC.Identity;
-using Store.Application.Interfaces.IdentityManagers;
+using Store.WebApplicationMVC.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
@@ -23,7 +23,7 @@ builder.Services.AddSingleton<IUserFactory, UserFactory>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StoreDb"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AWSdb"));
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>().AddEntityFrameworkStores<ApplicationDbContext>();
@@ -63,7 +63,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "pagination",
     pattern: "Products/Page{page:int}",
-    defaults: new { Controller = "Home", Action="Index", page = 1 }
+    defaults: new { Controller = "Home", Action = "Index", page = 1 }
     );
 
 app.MapControllerRoute(
@@ -92,13 +92,13 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "paginationOrder",
-    pattern:"Orders/Page{page:int}",
-    defaults: new { Controller = "Order", Action = "Index", page = 1}
+    pattern: "Orders/Page{page:int}",
+    defaults: new { Controller = "Order", Action = "Index", page = 1 }
     );
 
 app.MapDefaultControllerRoute();
 
-//SeedData.EnsurePopulated(app);
+SeedData.EnsurePopulated(app);
 await SeedData.SeedRolesAsync(app);
 
 app.Run();

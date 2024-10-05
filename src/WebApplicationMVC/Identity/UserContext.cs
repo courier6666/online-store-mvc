@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Store.Domain.Entities.Interfaces;
+﻿using Store.Domain.Entities.Interfaces;
 using Store.WebApplicationMVC.Extensions;
 
 namespace Store.WebApplicationMVC.Identity

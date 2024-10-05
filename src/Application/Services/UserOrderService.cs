@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Store.Application.DataTransferObjects;
+﻿using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Mapper;
 using Store.Application.Interfaces.Services;
 using Store.Domain.Entities;
@@ -303,7 +298,7 @@ namespace Store.Application.Services
                     Message = $"Order '{createdOrder.Id}' has been created by user."
                 });
 
-                foreach(var product in productDetailsDto)
+                foreach (var product in productDetailsDto)
                 {
                     Product foundProduct = await _unitOfWork.ProductRepository.GetByIdAsync(product.Product.Id.Value);
                     if (foundProduct == null)
@@ -334,7 +329,7 @@ namespace Store.Application.Services
                 await _unitOfWork.CommitAsync();
                 return _customMapper.MapPagedList<Order, OrderDto>(pagedOrders);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
                 throw ex;
@@ -348,9 +343,9 @@ namespace Store.Application.Services
                 _unitOfWork.BeginTransaction();
 
                 OrderStatus? statusParsed = StringToEnumConverter.ConvertStringToEnumValue<OrderStatus>(status);
-                if(statusParsed == null)
+                if (statusParsed == null)
                     throw new ArgumentException($"Unknown status provided! No such status: '{status}'", nameof(status));
-                
+
                 var pagedOrders = await _unitOfWork.OrderRepository.GetPagedListFilterAndOrderAsync(page,
                     pageSize,
                     o => o.OrderAuthorId == userId && o.Status == statusParsed,

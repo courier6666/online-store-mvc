@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Store.Domain.Entities.Model
+﻿namespace Store.Domain.Entities.Model
 {
     /// <summary>
     /// ONLY public const fields allowed of type string
@@ -16,9 +10,9 @@ namespace Store.Domain.Entities.Model
         public static IEnumerable<string> GetAllRoles()
         {
             Type roleType = typeof(Roles);
-            foreach(var field in roleType.GetFields())
+            foreach (var field in roleType.GetFields())
             {
-                if(field.IsLiteral && !field.IsInitOnly && field.FieldType == typeof(string))
+                if (field.IsLiteral && !field.IsInitOnly && field.FieldType == typeof(string))
                     yield return field.GetRawConstantValue() as string ?? "";
             }
         }

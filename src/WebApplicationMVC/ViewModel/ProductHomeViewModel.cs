@@ -1,6 +1,4 @@
 ﻿using Store.Application.DataTransferObjects;
-using Store.Application.Queries;
-using Store.Domain.PagedLists;
 using Store.WebApplicationMVC.Models;
 
 namespace Store.WebApplicationMVC.ViewModel

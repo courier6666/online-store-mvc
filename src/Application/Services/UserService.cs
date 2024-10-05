@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Store.Application.Interfaces.Mapper;
-using Store.Application.DataTransferObjects;
-using Store.Application.Interfaces.Services;
-using Store.Application.Responses;
-using Store.Domain.Entities;
-using Store.Domain.Entities.Interfaces;
-using Store.Domain.Entities.Model;
+﻿using Store.Application.DataTransferObjects;
 using Store.Application.Factories;
 using Store.Application.Interfaces.IdentityManagers;
-using System.Runtime.InteropServices;
-using System.Net.WebSockets;
+using Store.Application.Interfaces.Mapper;
+using Store.Application.Interfaces.Services;
+using Store.Application.Responses;
+using Store.Domain.Entities.Interfaces;
+using Store.Domain.Entities.Model;
 
 namespace Store.Application.Services
 {
@@ -49,7 +41,7 @@ namespace Store.Application.Services
         {
             try
             {
-                
+
                 var foundUser = await _userManager.FindByNameAsync(login);
 
                 if (foundUser == null)
@@ -59,12 +51,12 @@ namespace Store.Application.Services
                     return new LogInResponse() { UserId = null, LoginFound = true, IsPasswordCorrect = false };
 
                 var result = await _signInManager.SignInPasswordAsync(foundUser, password);
-                if(!result)
+                if (!result)
                 {
                     return new LogInResponse() { SignedIn = false, LoginFound = true, IsPasswordCorrect = true };
                 }
 
-                return new LogInResponse() { UserId = foundUser.Id,SignedIn = true, LoginFound = true, IsPasswordCorrect = true, UserRoles = (await _userManager.GetRolesAsync(foundUser)).ToArray()};
+                return new LogInResponse() { UserId = foundUser.Id, SignedIn = true, LoginFound = true, IsPasswordCorrect = true, UserRoles = (await _userManager.GetRolesAsync(foundUser)).ToArray() };
 
             }
             catch (Exception e)
@@ -80,7 +72,7 @@ namespace Store.Application.Services
             {
                 return await _signInManager.SignOutAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _unitOfWork.Rollback();
                 throw new InvalidOperationException("Operation to log out failed!", innerException: e);

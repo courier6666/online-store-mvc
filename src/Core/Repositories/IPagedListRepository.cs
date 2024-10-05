@@ -1,11 +1,5 @@
-﻿using Store.Domain.Entities;
-using Store.Domain.PagedLists;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Store.Domain.PagedLists;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Store.Domain.Repositories
 {

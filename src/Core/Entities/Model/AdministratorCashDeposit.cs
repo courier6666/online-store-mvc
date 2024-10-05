@@ -12,7 +12,7 @@ public class AdministratorCashDeposit : CashDeposit
     /// <param name="moneyAmount"></param>
     public override void DepositAmount(decimal moneyAmount)
     {
-        
+
     }
     /// <summary>
     /// Used for withdrawing money from administrator cash deposit.
@@ -21,6 +21,6 @@ public class AdministratorCashDeposit : CashDeposit
     /// <param name="moneyAmount"></param>
     public override void WithdrawAmount(decimal moneyAmount)
     {
-        
+
     }
 }

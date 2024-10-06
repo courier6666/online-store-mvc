@@ -14,6 +14,7 @@ using Store.Persistence.Main.UnitOfWorks;
 using Store.WebApplicationMVC.Data;
 using Store.WebApplicationMVC.Identity;
 using Store.WebApplicationMVC.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();

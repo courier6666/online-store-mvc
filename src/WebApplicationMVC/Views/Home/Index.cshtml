@@ -105,8 +105,8 @@
                     <a asp-controller="Home" asp-action="Index" class="d-inline btn float-left"><i class="fa-solid fa-x"></i></a>
                 </div>
             }
-            <div class="d-flex justify-content-between bg-light mt-2 mb-2 pt-1 pb-1">
-                <div>
+            <div class="d-flex justify-content-between bg-light mt-2 mb-2 p-1 shadow">
+                <div class="m-2">
                     @for (int i = 0; i < allSortCriteriaNames.Length; ++i)
                     {
                         <a sorted-page-link
@@ -121,14 +121,14 @@
                 <div page-model="@Model.PagingInfo" page-route=@currentRoute
                      page-arrow-class="btn"
                      page-class="btn p-1"
-                     page-selected-class="btn p-1 mb-1"
-                     class="d-flex flex-row"
+                     page-selected-class="btn bg-black text-white p-1"
+                     class="d-flex flex-row shadow-sm m-2"
                      number-of-pages-from-selected-page-visible="3"
                      page-left-symbol="fa-solid fa-angle-left black"
                      page-right-symbol="fa-solid fa-angle-right"></div>
             </div>
-            <table class="table table-striped table-bordered">
-                <thead>
+            <table class="table table-striped table-bordered shadow">
+                <thead class="table-dark">
                     <tr>
                         <th>Name</th>
                         <th>Category</th>

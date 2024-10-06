@@ -15,7 +15,7 @@ namespace Store.Application.Interfaces.Services
         Task AddProductToExistingOrderAsync(Guid userId, Guid orderId, ProductDetailsDto productDetailsDto);
         Task CancelOrderAsync(Guid orderId, Guid userId);
         Task<PagedList<OrderDto>> GetAllOrdersForUserAsync(Guid userId, int page, int pageSize);
-        Task<PagedList<OrderDto>> GetAllOrdersOfStatusForUserAsync(Guid userId, int page, int pageSize, string status);
+        Task<PagedList<OrderDto>> GetAllOrdersOfStatusForUserAsync(Guid userId, int page, int pageSize, string[] statuses);
         Task<OrderDto> GetOrderAsync(Guid orderId);
     }
 }

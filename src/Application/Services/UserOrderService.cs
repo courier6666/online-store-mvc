@@ -6,6 +6,7 @@ using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
 using Store.Domain.PagedLists;
 using Store.Domain.StringToEnumConverter;
+using System.Linq.Expressions;
 
 namespace Store.Application.Services
 {
@@ -336,19 +337,20 @@ namespace Store.Application.Services
             }
         }
 
-        public async Task<PagedList<OrderDto>> GetAllOrdersOfStatusForUserAsync(Guid userId, int page, int pageSize, string status)
+        public async Task<PagedList<OrderDto>> GetAllOrdersOfStatusForUserAsync(Guid userId, int page, int pageSize, string[] statuses)
         {
             try
             {
                 _unitOfWork.BeginTransaction();
 
-                OrderStatus? statusParsed = StringToEnumConverter.ConvertStringToEnumValue<OrderStatus>(status);
-                if (statusParsed == null)
-                    throw new ArgumentException($"Unknown status provided! No such status: '{status}'", nameof(status));
+                OrderStatus[] statusesParsed = statuses.Select(s => StringToEnumConverter.ConvertStringToEnumValue<OrderStatus>(s)).
+                    Where(status => status != null).
+                    Select(status => status.Value).
+                    ToArray();
 
                 var pagedOrders = await _unitOfWork.OrderRepository.GetPagedListFilterAndOrderAsync(page,
                     pageSize,
-                    o => o.OrderAuthorId == userId && o.Status == statusParsed,
+                    o => o.OrderAuthorId == userId && (statusesParsed.Length == 0 || statusesParsed.Contains(o.Status)),
                     o => o.CreatedDate);
 
                 await _unitOfWork.CommitAsync();

@@ -7,6 +7,6 @@ namespace Store.WebApplicationMVC.ViewModel
     {
         public IEnumerable<OrderDto> Orders { get; set; }
         public PagingInfo PagingInfo { get; set; }
-        public string? OrderStatus { get; set; }
+        public OrderStatusViewModel[] OrderStatuses { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace Store.Persistence.Main.Identity
         }
         public async Task<bool> CreateAsync(string roleName)
         {
+            
             return (await _roleManager.CreateAsync(new IdentityRole<Guid>(roleName))).Succeeded;
         }
 

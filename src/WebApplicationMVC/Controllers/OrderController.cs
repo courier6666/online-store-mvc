@@ -25,11 +25,6 @@ namespace Store.WebApplicationMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Index(int page = 1, string[]? orderStatuses = null)
         {
-            if (!_userContext.IsAuthenticated || _userContext.UserId == null)
-            {
-                return View("Error");
-            }
-
             var orders = orderStatuses == null ?
                 await _userOrderService.GetAllOrdersForUserAsync(_userContext.UserId.Value, 1, PageSize) :
                 await _userOrderService.GetAllOrdersOfStatusForUserAsync(_userContext.UserId.Value, 1, PageSize, orderStatuses);
@@ -56,11 +51,6 @@ namespace Store.WebApplicationMVC.Controllers
         [Authorize]
         public async Task<IActionResult> CreateOrderFromCart()
         {
-            if (!_userContext.IsAuthenticated || _userContext.UserId == null)
-            {
-                return View("Error");
-            }
-
             await _userOrderService.CreateOrderAsync(_userContext.UserId.Value, _cartService.Lines.ToArray());
             _cartService.Clear();
             return RedirectToAction("Index", new { page = 1 });

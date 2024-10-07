@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Store.Application.Interfaces.IdentityManagers;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Model;
 using Store.Persistence.Main.DatabaseContexts;
+using Store.Persistence.Main.Identity;
 
 namespace Store.WebApplicationMVC.Data
 {
@@ -39,6 +41,30 @@ namespace Store.WebApplicationMVC.Data
                 }
             }
             context.SaveChanges();
+        }
+        public static async Task AddAdminUserAsync(IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<IUserManager>();
+
+            AppUser appUser = new AppUser()
+            {
+                FirstName = "Admin",
+                LastName = "Admin",
+                Birthday = new DateOnly(1991, 1, 1),
+                Login = "admin",
+                PhoneNumber = "1234567890",
+                Email="mail@mail.com",
+                Address = new Address()
+                {
+                    City =  "1",
+                    Country = "1",
+                    State = "1",
+                    Street = "1"
+                }
+            };
+            await userManager.CreateAsync(appUser, "Admin1_");
+            await userManager.AddToRoleAsync(appUser, Roles.Admin);
         }
         public static async Task SeedRolesAsync(IApplicationBuilder app)
         {

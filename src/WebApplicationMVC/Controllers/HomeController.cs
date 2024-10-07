@@ -2,6 +2,8 @@
 using Store.Application.Interfaces.Services;
 using Store.Application.Queries;
 using Store.Domain.Entities;
+using Store.Domain.Entities.Interfaces;
+using Store.Domain.Entities.Model;
 using Store.WebApplicationMVC.Models;
 using Store.WebApplicationMVC.ViewModel;
 
@@ -9,10 +11,14 @@ namespace Store.WebApplicationMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private IProductService _productService;
-        public HomeController(IProductService productService)
+        private readonly IProductService _productService;
+        private readonly IUserService _userService;
+        private readonly IUserContext _userContext;
+        public HomeController(IProductService productService, IUserService userService, IUserContext userContext)
         {
             _productService = productService;
+            _userService = userService;
+            _userContext = userContext;
         }
         int PageSize = 20;
         public async Task<IActionResult> Index(string? category,
@@ -51,8 +57,11 @@ namespace Store.WebApplicationMVC.Controllers
                 MinPrice = minPrice,
                 AllCategories = await _productService.GetAllCategoriesAsync(),
                 CurrentValueSortedBy = order,
-                ProductName = productName
-            };
+                ProductName = productName,
+                IsUserAdmin = _userContext.IsAuthenticated &&
+                    _userContext.UserId != null &&
+                    ((await _userService.GetRolesByUserIdAsync(_userContext.UserId.Value))?.Contains(Roles.Admin) ?? false)
+            }; ;
 
             return View(productHomeViewModel);
         }

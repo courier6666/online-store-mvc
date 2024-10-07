@@ -3,6 +3,7 @@
 @{
     var selectedCategory = Model.Category;
     var currentRoute = "pagination";
+    var returnUrl = (this.ViewContext?.HttpContext?.Request?.Path ?? "/") + this.ViewContext?.HttpContext.Request.QueryString;
 
     string[] allSortingRoutes = new[]
     {
@@ -38,10 +39,22 @@
             currentRoute = "pagination";
             break;
     }
+
     var cultureInfo = new CultureInfo("en-US");
     CultureInfo.CurrentCulture = cultureInfo;
+
     string selectedOrderByClass = "text-white bg-black";
     string unselectedOrderByClass = "text-black bg-white";
+
+    List<(string, string, string)> controllerActionAndNameOfProductAction = new List<(string, string, string)>
+    {
+        ("Cart", "AddToCart", "Add to cart"),
+    };
+    if (Model.IsUserAdmin)
+    {
+        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Edit", "Edit"));
+        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Delete", "Delete"));
+    }
 }
 
 <div class="container-fluid">
@@ -148,17 +161,30 @@
                             <td>@product.Price.ToString("c")</td>
                             <td>@product.DateOfCreation.ToString("U")</td>
                             <td>
-                                <form asp-controller="Cart" asp-action="AddToCart">
-                                    <input type="hidden" name="productId" value="@product.Id" />
-                                    <button type="submit" class="btn text-white bg-black">
-                                        Add to cart
-                                    </button>
-                                </form>
+                                @foreach (var (controller, action, name) in controllerActionAndNameOfProductAction)
+                                {
+                                    <form asp-controller="@controller" asp-action="@action" method="get">
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        <button type="submit" class="btn text-white bg-black m-1">
+                                            @name
+                                        </button>
+                                    </form>
+                                }
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
+            @if (Model.IsUserAdmin)
+            {
+                <form class="mw-100" asp-controller="ProductAdmin" asp-action="Create" method="get">
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn text-white bg-black w-100">
+                        Add New Product
+                    </button>
+                </form>
+            }
         </div>
     </div>
 </div>

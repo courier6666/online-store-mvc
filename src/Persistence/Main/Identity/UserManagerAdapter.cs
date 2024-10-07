@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Store.Application.Interfaces.IdentityManagers;
 using Store.Application.Responses;
 using Store.Domain.Entities.Interfaces;
 
 namespace Store.Persistence.Main.Identity
 {
-    public class UserManagerAdapter : IUserManager
+    public class UserManagerAdapter : IUserManager, IDisposable
     {
         private readonly UserManager<AppUser> _userManager;
         public UserManagerAdapter(UserManager<AppUser> userManager)
@@ -32,6 +33,12 @@ namespace Store.Persistence.Main.Identity
                 Errors = result.Succeeded ? null : result.Errors.Select(e => e.Description).ToArray(),
             };
         }
+
+        public void Dispose()
+        {
+            _userManager.Dispose();
+        }
+
         public async Task<IUser> FindByNameAsync(string username)
         {
             return await _userManager.FindByNameAsync(username);

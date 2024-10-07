@@ -1,0 +1,43 @@
+﻿@model (ProductViewModel ProductViewModel, string Action, string Controller, string Name)
+
+<div class="row">
+    <div class="col mx-auto" style="max-width:30%">
+        <h3>@Model.Name</h3>
+        <form asp-controller="@Model.Controller" asp-action="@Model.Action" method="post">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="@Model.ProductViewModel.ReturnUrl" name="ReturnUrl"/>
+            @if(Model.Name != "Create")
+            {
+                <div class="form-group">
+                    <label asp-for="@Model.ProductViewModel.Id" class="control-label"></label>
+                    <input asp-for="@Model.ProductViewModel.Id" name="Id" class="form-control" />
+                    <span asp-validation-for="@Model.ProductViewModel.Id" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="@Model.ProductViewModel.Name" class="control-label"></label>
+                <input asp-for="@Model.ProductViewModel.Name" name="Name" class="form-control" />
+                <span asp-validation-for="@Model.ProductViewModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ProductViewModel.Category" class="control-label"></label>
+                <input asp-for="@Model.ProductViewModel.Category" name="Category" class="form-control" />
+                <span asp-validation-for="@Model.ProductViewModel.Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ProductViewModel.Description" class="control-label"></label>
+                <input type="text" asp-for="@Model.ProductViewModel.Description" name="Description" class="form-control" />
+                <span asp-validation-for="@Model.ProductViewModel.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ProductViewModel.Price" class="control-label"></label>
+                <input asp-for="@Model.ProductViewModel.Price" name="Price" class="form-control" />
+                <span asp-validation-for="@Model.ProductViewModel.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group m-1">
+                <input class="btn btn-outline-success float right" type="submit" value="@Model.Name"/>
+                <a class="btn btn-outline-secondary" href="@Model.ProductViewModel.ReturnUrl">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

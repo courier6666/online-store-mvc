@@ -13,5 +13,6 @@ namespace Store.Application.Interfaces.Services
         Task<LogInResponse> LogInAsync(string login, string password);
         Task<bool> LogOutAsync();
         Task<IUser> FindUserByLogin(string login);
+        Task<string[]?> GetRolesByUserIdAsync(Guid id);
     }
 }

@@ -41,7 +41,6 @@ namespace Store.Application.Services
         {
             try
             {
-
                 var foundUser = await _userManager.FindByNameAsync(login);
 
                 if (foundUser == null)
@@ -120,6 +119,23 @@ namespace Store.Application.Services
             catch (Exception e)
             {
                 throw new InvalidOperationException("Operation to find user by login failed!", innerException: e);
+            }
+        }
+
+        public async Task<string[]?> GetRolesByUserIdAsync(Guid id)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                var foundUser = await _unitOfWork.UserRepository.GetByIdAsync(id);
+                var roles = (await _userManager.GetRolesAsync(foundUser)).ToArray();
+                await _unitOfWork.CommitAsync();
+                return roles.Count() > 0 ? roles : null;
+            }
+            catch (Exception e)
+            {
+                _unitOfWork.Rollback();
+                throw new InvalidOperationException("Operation to get roles of user!", innerException: e);
             }
         }
     }

@@ -20,6 +20,6 @@ namespace Store.Persistence.Main.Identity
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public byte[] Version { get; set; }
-        public ICollection<string> Roles { get; set; }
+        public ICollection<string> Roles { get; set; } 
     }
 }

@@ -99,10 +99,10 @@ namespace Store.Application.Services
             try
             {
                 _unitOfWork.BeginTransaction();
-
-                var productInfo = _customMapper.Map<Product, ProductDto>(await _unitOfWork.ProductRepository.GetByIdAsync(id));
-
+                var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
+                var productInfo = _customMapper.Map<Product, ProductDto>(product);
                 await _unitOfWork.CommitAsync();
+                
                 return productInfo;
             }
             catch (Exception e)
@@ -160,12 +160,12 @@ namespace Store.Application.Services
                     case "newest":
                         pagedProducts = await _unitOfWork.
                             ProductRepository.
-                            GetPagedListFilterAndOrderAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
+                            GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
                         break;
                     case "oldest":
                         pagedProducts = await _unitOfWork.
                             ProductRepository.
-                            GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
+                            GetPagedListFilterAndOrderAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
                         break;
                     case "cheapest":
                         pagedProducts = await _unitOfWork.

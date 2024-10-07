@@ -13,5 +13,6 @@ namespace Store.WebApplicationMVC.ViewModel
         public string? ProductName { get; set; }
         public IEnumerable<string> AllCategories { get; set; }
         public string? CurrentValueSortedBy { get; set; }
+        public bool IsUserAdmin { get; init; }
     }
 }

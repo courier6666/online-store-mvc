@@ -187,7 +187,7 @@ namespace Store.Application.Services
                 _unitOfWork.OrderEntryRepository.Add(new Entry()
                 {
                     OrderId = createdOrder.Id,
-                    Message = $"Order '{createdOrder.Id}' has been created by user."
+                    Message = $"Order '{createdOrder.Id}' has been created by user. Total price: {(productDetailsDto.Product.Price * productDetailsDto.ItemsCount).ToString("c")}."
                 });
 
                 await _unitOfWork.CommitAsync();
@@ -293,11 +293,7 @@ namespace Store.Application.Services
                 createdOrder.OrderAuthorId = userId;
                 _unitOfWork.OrderRepository.Add(createdOrder);
 
-                _unitOfWork.OrderEntryRepository.Add(new Entry()
-                {
-                    OrderId = createdOrder.Id,
-                    Message = $"Order '{createdOrder.Id}' has been created by user."
-                });
+
 
                 foreach (var product in productDetailsDto)
                 {
@@ -309,7 +305,18 @@ namespace Store.Application.Services
                     productDetail.Product = null;
 
                     _unitOfWork.OrderRepository.AddOrderDetailsToOrder(createdOrder.Id, productDetail);
+                    _unitOfWork.OrderEntryRepository.Add(new Entry()
+                    {
+                        OrderId = createdOrder.Id,
+                        Message = $"Product '{foundProduct.Name}' has been added to order '{createdOrder.Id}'."
+                    });
                 }
+
+                _unitOfWork.OrderEntryRepository.Add(new Entry()
+                {
+                    OrderId = createdOrder.Id,
+                    Message = $"Order '{createdOrder.Id}' has been created by user. Total price:"
+                });
 
                 await _unitOfWork.CommitAsync();
                 return createdOrder.Id;

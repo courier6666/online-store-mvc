@@ -375,11 +375,15 @@ namespace Store.Application.Services
             try
             {
                 _unitOfWork.BeginTransaction();
-
+                
                 var order = await _unitOfWork.OrderRepository.GetOrderByIdIncludingOrderAndProductDetailsAsync(orderId);
-
+                var entries = await _unitOfWork.OrderEntryRepository.GetAllEntriesOfOrderAsync(order.Id);
                 await _unitOfWork.CommitAsync();
-                return _customMapper.Map<Order, OrderDto>(order);
+
+                var entriesDto = _customMapper.MapEnumerable<Entry, EntryDto>(entries);
+                var orderDto = _customMapper.Map<Order, OrderDto>(order);
+                orderDto.Entries = entriesDto.OrderByDescending(e => e.CreatedDate).ToList();
+                return orderDto;
             }
             catch (Exception ex)
             {

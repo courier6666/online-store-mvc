@@ -26,7 +26,13 @@
                 @if (Model.UserContext.IsAuthenticated && Model.UserContext.UserId != null)
                 {
                     <div class="col-auto p-0 border border-top-0 border-bottom-0">
-                        <a asp-controller="Order" asp-action="Index" class="btn p-0 pe-2 ps-2"><span>Orders</span>&nbsp;<i class="fa-solid fa-clipboard-list"></i></a>
+                        <a asp-controller="Order" asp-action="Index" class="btn p-0 pe-2 ps-2"><span>My Orders</span>&nbsp;<i class="fa-solid fa-clipboard-list"></i></a>
+                    </div>
+                }
+                @if (Model.IsUserAdmin)
+                {
+                    <div class="col-auto p-0 border border-top-0 border-bottom-0">
+                        <a asp-controller="OrderAdmin" asp-action="Index" class="btn p-0 pe-2 ps-2"><span>User Orders</span>&nbsp;<i class="fa-solid fa-clipboard-list"></i></a>
                     </div>
                 }
                 <div class="col-auto p-0 border border-top-0 border-bottom-0">

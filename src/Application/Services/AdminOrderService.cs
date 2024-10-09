@@ -1,11 +1,14 @@
 ﻿using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Mapper;
 using Store.Application.Interfaces.Services;
+using Store.Application.Queries;
 using Store.Application.Utils;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
+using Store.Domain.PagedLists;
 using Store.Domain.StringToEnumConverter;
+using System.Linq.Expressions;
 
 namespace Store.Application.Services
 {
@@ -337,6 +340,39 @@ namespace Store.Application.Services
 
             return _customMapper.MapEnumerable<Order, OrderDto>(foundOrders);
         }
+
+        public async Task<PagedList<OrderDto>> GetPagedOrdersAsync(OrdersAdminPageQuery adminOrdersPageQuery)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+                OrderStatus[] statusesParsed = adminOrdersPageQuery.OrderStatuses?.Select(s => StringToEnumConverter.ConvertStringToEnumValue<OrderStatus>(s)).
+                    Where(status => status != null).
+                    Select(status => status.Value).
+                    ToArray() ?? new OrderStatus[0];
+
+                Expression<Func<Order, bool>> exp = o =>
+                (adminOrdersPageQuery.OrderId == null || o.Id == adminOrdersPageQuery.OrderId) &&
+                (adminOrdersPageQuery.UserId == null || o.OrderAuthorId == adminOrdersPageQuery.OrderId) &&
+                (statusesParsed.Length == 0 || statusesParsed.Contains(o.Status));
+
+                var pagedOrders = await _unitOfWork.OrderRepository.GetPagedListFilterAndOrderDescAsync(adminOrdersPageQuery.Page,
+                    adminOrdersPageQuery.PageSize,
+                    exp,
+                    o => o.CreatedDate);
+
+                await _unitOfWork.CommitAsync();
+
+                return _customMapper.MapPagedList<Order, OrderDto>(pagedOrders);
+            }
+            catch(Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// Pays for order by user from provided cash deposit. Order status gets changed to <typeparamref name="PaymentTransferred"/>.
         /// Order status must be <typeparamref name="New"/> first.

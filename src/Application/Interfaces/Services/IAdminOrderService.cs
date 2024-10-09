@@ -1,4 +1,6 @@
 ﻿using Store.Application.DataTransferObjects;
+using Store.Application.Queries;
+using Store.Domain.PagedLists;
 
 namespace Store.Application.Interfaces.Services
 {
@@ -25,6 +27,7 @@ namespace Store.Application.Interfaces.Services
         Task SendOrderAsync(Guid orderId, Guid adminId);
         Task ReceiveOrderAsync(Guid orderId, Guid adminId);
         Task CompleteOrderAsync(Guid orderId, Guid adminId);
+        Task<PagedList<OrderDto>> GetPagedOrdersAsync(OrdersAdminPageQuery productsPageQuery);
 
     }
 }

@@ -7,6 +7,7 @@
         public string Status { get; set; }
         public Guid OrderAuthorId { get; set; }
         public ICollection<ProductDetailsForOrderDto> ProductDetails { get; set; }
+        public ICollection<EntryDto> Entries { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

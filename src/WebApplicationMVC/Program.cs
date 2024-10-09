@@ -97,6 +97,12 @@ app.MapControllerRoute(
     defaults: new { Controller = "Order", Action = "Index", page = 1 }
     );
 
+app.MapControllerRoute(
+    name: "paginationAdminOrder",
+    pattern: "UserOrders/Page{page:int}",
+    defaults: new { Controller = "OrderAdmin", Action = "Index", page = 1 }
+    );
+
 app.MapDefaultControllerRoute();
 
 SeedData.EnsurePopulated(app);

@@ -1,0 +1,38 @@
+﻿@model (IEnumerable<OrderDto> Orders, PagingInfo PagingInfo, string[] Statuses, string CurrentRoute, string DetailsOrderController, string DetailsOrderAction)
+
+<h2 class="text-center">Orders</h2>
+@if (Model.Orders.Count() > 0)
+{
+    <div page-model="@Model.PagingInfo" page-route=@Model.CurrentRoute
+         page-url-orderStatuses="@Model.Statuses"
+         page-arrow-class="btn"
+         page-class="btn p-1"
+         page-selected-class="btn bg-black text-white p-1"
+         class="d-flex flex-row shadow-sm m-2"
+         number-of-pages-from-selected-page-visible="3"
+         page-left-symbol="fa-solid fa-angle-left black"
+         page-right-symbol="fa-solid fa-angle-right"></div>
+}
+<table class="table table-striped table-bordered shadow">
+    <thead class="table-dark">
+        <tr>
+            <th>Id</th>
+            <th>Status</th>
+            <th>Total price</th>
+            <th>Created at</th>
+            <th>More</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.Orders)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.Status</td>
+                <td>@order.TotalPrice.ToString()</td>
+                <td>@order.CreatedDate.ToString("g")</td>
+                <td><a asp-controller="@Model.DetailsOrderController" asp-action="@Model.DetailsOrderAction" asp-route-orderId="@order.Id" class="btn border text-white bg-black">Details</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

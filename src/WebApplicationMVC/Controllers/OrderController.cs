@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.Interfaces.Services;
+using Store.Application.Services;
 using Store.Application.Utils;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
@@ -72,6 +73,25 @@ namespace Store.WebApplicationMVC.Controllers
                 ToArray();
 
             return RedirectToAction("Index", new { orderStatuses = statuses.Count() > 0 ? statuses : null});
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CancelOrder(Guid orderId)
+        {
+            try
+            {
+                await _userOrderService.CancelOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+
+            }
+            var foundOrder = await _userOrderService.GetOrderAsync(orderId);
+            return View("Details", new OrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Store.Application.Interfaces.Services
     /// </summary>
     public interface IUserService
     {
+        Task<IUser> FindUserById(Guid userId);
         Task<CreateUserResponse> RegisterAsync(UserRegistrationDto userRegistrationData);
         Task<LogInResponse> LogInAsync(string login, string password);
         Task<bool> LogOutAsync();

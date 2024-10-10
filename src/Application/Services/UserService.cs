@@ -138,5 +138,22 @@ namespace Store.Application.Services
                 throw new InvalidOperationException("Operation to get roles of user!", innerException: e);
             }
         }
+
+        public async Task<IUser> FindUserById(Guid userId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                var foundUser = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+                var roles = (await _userManager.GetRolesAsync(foundUser)).ToArray();
+                await _unitOfWork.CommitAsync();
+                return foundUser;
+            }
+            catch (Exception e)
+            {
+                _unitOfWork.Rollback();
+                throw new InvalidOperationException("Operation to get roles of user!", innerException: e);
+            }
+        }
     }
 }

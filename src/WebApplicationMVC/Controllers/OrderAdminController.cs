@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.Interfaces.Services;
 using Store.Application.Queries;
+using Store.Application.Services;
 using Store.Application.Utils;
 using Store.Domain.Entities;
+using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
 using Store.WebApplicationMVC.Models;
 using Store.WebApplicationMVC.ViewModel;
@@ -14,9 +16,13 @@ namespace Store.WebApplicationMVC.Controllers
     public class OrderAdminController : Controller
     {
         private readonly IAdminOrderService _adminOrderService;
-        public OrderAdminController(IAdminOrderService adminOrderService)
+        private readonly IUserService _userService;
+        private readonly IUserContext _userContext;
+        public OrderAdminController(IAdminOrderService adminOrderService, IUserContext userContext, IUserService userService)
         {
             _adminOrderService = adminOrderService;
+            _userContext = userContext;
+            _userService = userService;
         }
         int PageSize { get; } = 20;
         public async Task<IActionResult> Index(int page = 1, string[]? orderStatuses = null, Guid? userId = null, Guid? orderId = null)
@@ -49,6 +55,14 @@ namespace Store.WebApplicationMVC.Controllers
                 }).ToArray()
             });
         }
+        public async Task<IActionResult> Details(Guid orderId)
+        {
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View(new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
         [HttpPost]
         public IActionResult FilterOrders([FromForm] AdminOrdersViewModel adminOrdersViewModel)
         {
@@ -59,6 +73,112 @@ namespace Store.WebApplicationMVC.Controllers
             return RedirectToAction("Index", new { orderStatuses = statuses.Count() > 0 ? statuses : null,
                 userId = adminOrdersViewModel.UserId,
                 orderId = adminOrdersViewModel.OrderId,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReceivePaymentForOrder(Guid orderId)
+        {
+            try
+            {
+                await _adminOrderService.ReceivePaymentForOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch(InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+            }
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View("Details", new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> CancelOrder(Guid orderId)
+        {
+            try
+            {
+                await _adminOrderService.CancelOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+
+            }
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View("Details", new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendOrder(Guid orderId)
+        {
+            try
+            {
+                await _adminOrderService.SendOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+            }
+
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View("Details", new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReceiveOrder(Guid orderId)
+        {
+            try
+            {
+                await _adminOrderService.ReceiveOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+            }
+
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View("Details", new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> CompleteOrder(Guid orderId)
+        {
+            try
+            {
+                await _adminOrderService.CompleteOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+            }
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View("Details", new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangeOrderStatusManually(Guid orderId, string status)
+        {
+            try
+            {
+                await _adminOrderService.ChangeOrderStatusAsync(orderId, status, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+            }
+
+            var foundOrder = await _adminOrderService.GetOrderAsync(orderId);
+            return View("Details", new AdminOrderDetailViewModel()
+            {
+                Order = foundOrder,
             });
         }
     }

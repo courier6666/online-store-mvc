@@ -67,10 +67,10 @@ namespace Store.Application.Services
 
                 await _unitOfWork.CommitAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException($"Failed to add product to existing order!", innerException: e);
+                throw ex;
             }
         }
         /// <summary>
@@ -95,7 +95,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 if (foundOrder.Status == OrderStatus.CancelledByUser || foundOrder.Status == OrderStatus.CancelledByAdmin)
@@ -118,7 +118,7 @@ namespace Store.Application.Services
                 _unitOfWork.OrderEntryRepository.Add(new Entry()
                 {
                     OrderId = foundOrder.Id,
-                    Message = $"Order '{foundOrder.Id}' has been cancelled by user"
+                    Message = $"Order '{foundOrder.Id}' has been cancelled by admin."
                 });
 
                 _unitOfWork.OrderRepository.Update(foundOrder);
@@ -127,7 +127,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException($"Failed to cancel order for user!", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -157,7 +157,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 foundOrder.Status = status;
@@ -175,7 +175,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to cancel order by admin.", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -195,7 +195,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 Order foundOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
@@ -204,7 +204,7 @@ namespace Store.Application.Services
                     throw new InvalidOperationException($"Order by id '{orderId}' not found!");
 
                 if (foundOrder.Status != OrderStatus.Received)
-                    throw new InvalidOperationException($"Order by id '{foundOrder.Id}' must be first received by user in order for order to completed by administrator.");
+                    throw new InvalidOperationException($"Order by id '{foundOrder.Id}' must be first received by user in order for order to be completed by administrator.");
 
                 foundOrder.Status = OrderStatus.Completed;
 
@@ -221,7 +221,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to receive order for user!", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -267,10 +267,10 @@ namespace Store.Application.Services
                 await _unitOfWork.CommitAsync();
                 return createdOrder.Id;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to create order!", innerException: e);
+                throw ex;
             }
         }
 
@@ -313,10 +313,10 @@ namespace Store.Application.Services
                 await _unitOfWork.CommitAsync();
                 return createdOrder.Id;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to create order!", innerException: e);
+                throw ex;
             }
         }
 
@@ -442,7 +442,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to pay for order.", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -463,7 +463,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 Order foundOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
@@ -489,7 +489,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to receive order for user!", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -510,7 +510,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 Order foundOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
@@ -536,7 +536,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to receive payment for order!", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -557,7 +557,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 Order foundOrder = await _unitOfWork.OrderRepository.GetOrderWithPaymentDetailsAsync(orderId);
@@ -591,7 +591,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to refund order.", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -612,7 +612,7 @@ namespace Store.Application.Services
                 if (foundAdmin == null)
                     throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
 
-                if (foundAdmin.Roles.Contains(Roles.Admin))
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 Order foundOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
@@ -642,7 +642,28 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to receive payment for order!", innerException: ex);
+                throw ex;
+            }
+        }
+        public async Task<OrderDto> GetOrderAsync(Guid orderId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+                var order = await _unitOfWork.OrderRepository.GetOrderByIdIncludingOrderAndProductDetailsAsync(orderId);
+                var entries = await _unitOfWork.OrderEntryRepository.GetAllEntriesOfOrderAsync(order.Id);
+                await _unitOfWork.CommitAsync();
+
+                var entriesDto = _customMapper.MapEnumerable<Entry, EntryDto>(entries);
+                var orderDto = _customMapper.Map<Order, OrderDto>(order);
+                orderDto.Entries = entriesDto.OrderByDescending(e => e.CreatedDate).ToList();
+                return orderDto;
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
             }
         }
     }

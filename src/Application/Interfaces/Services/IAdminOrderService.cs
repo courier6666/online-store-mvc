@@ -28,6 +28,7 @@ namespace Store.Application.Interfaces.Services
         Task ReceiveOrderAsync(Guid orderId, Guid adminId);
         Task CompleteOrderAsync(Guid orderId, Guid adminId);
         Task<PagedList<OrderDto>> GetPagedOrdersAsync(OrdersAdminPageQuery productsPageQuery);
+        Task<OrderDto> GetOrderAsync(Guid orderId);
 
     }
 }

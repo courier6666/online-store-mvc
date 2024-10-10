@@ -1,0 +1,119 @@
+﻿@model AdminOrderDetailViewModel
+
+@{
+
+    var orderStatusOperations = new (string action, string name)[]
+    {
+        ("ReceivePaymentForOrder", "Receive Payment"),
+        ("CancelOrder", "Cancel"),
+        ("SendOrder", "Send"),
+        ("ReceiveOrder", "Order received"),
+        ("CompleteOrder", "Complete")
+    };
+    var statuses = EnumValuesGetter.GetAllValues<OrderStatus>();
+}
+
+<div class="m-2">
+    <h2 class="text-center">Order '@Model.Order.Id'</h2>
+    <table class="table table-striped table-bordered shadow-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>Status</th>
+                <th>Total price</th>
+                <th>Created at</th>
+                <th>User Id</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.Order.Status</td>
+                <td>@Model.Order.TotalPrice.ToString()</td>
+                <td>@Model.Order.CreatedDate.ToString("g")</td>
+                <td>@Model.Order.OrderAuthorId</td>
+            </tr>
+    </table>
+    <div class="mb-2 mt-2">
+        <h4>Order status operations</h4>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mt-2 mb-2">
+            <div class="d-flex flex-row gap-2">
+                @foreach (var op in orderStatusOperations)
+                {
+                    <form asp-controller="OrderAdmin" asp-action="@op.action" method="post">
+                        <input type="hidden" asp-for="@Model.Order.Id" name="orderId" />
+                        <input class="btn bg-black text-white" type="submit" value="@op.name" />
+                    </form>
+                }
+            </div>
+        </div>
+        <div class="mt-2 mb-2">
+            <form asp-controller="OrderAdmin" asp-action="ChangeOrderStatusManually" method="post">
+                <input type="hidden" asp-for="@Model.Order.Id" name="orderId"/>
+                <div>
+                    <label>Status</label>
+                    <select name="status" class="form-control mt-1 mb-1" style="max-width: 15em;">
+                        <option selected value="@null">...</option>
+                        @foreach(var status in statuses)
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                </div>
+                <input class="btn bg-black text-white" type="submit" value="Change status manually" />
+            </form>
+        </div>
+    </div>
+    <div class="mb-2 mt-2">
+        <h3>Products ordered:</h3>
+        <table class="table table-striped table-bordered shadow-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var line in Model.Order.ProductDetails)
+                {
+                    <tr>
+                        <td>@line.Product.Name</td>
+                        <td>@line.Product.Description</td>
+                        <td>@line.Product.Category</td>
+                        <td>@line.ItemsCount</td>
+                        <td>@line.Product.Price.ToString("c")</td>
+
+                    </tr>
+                }
+                <tr>
+                    <th colspan="4">Total price</th>
+                    <td>@Model.Order.TotalPrice.ToString("c")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="mb-2 mt-2">
+        <h3>Order history:</h3>
+        <table class="table table-striped table-bordered shadow-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model.Order.Entries)
+                {
+                    <tr>
+                        <td>@entry.Id</td>
+                        <td>@entry.Message</td>
+                        <td>@entry.CreatedDate.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

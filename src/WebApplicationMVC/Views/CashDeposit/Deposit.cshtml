@@ -1,0 +1,27 @@
+﻿@model CashDepositViewModel
+
+<div class="row">
+    <div class="col mx-auto" style="max-width:30%">
+        <h3>Deposit - '@Model.CashDeposit.Id'</h3>
+        <form asp-controller="CashDeposit" asp-action="Deposit" method="post">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="@Model.ReturnUrl"/>
+            <input type="hidden" asp-for="@Model.CashDeposit.Id"/>
+            <input type="hidden" asp-for="@Model.CashDeposit.UserId" />
+            <div class="form-group m-1">
+                <label class="control-label" asp-for="@Model.CashDeposit.CurrentMoneyBalance">Current balance</label>
+                <input readonly asp-class="form-control" asp-for="@Model.CashDeposit.CurrentMoneyBalance" />
+                <span asp-validation-for="@Model.CashDeposit.CurrentMoneyBalance" class="text-danger"></span>
+            </div>
+            <div class="form-group m-1">
+                <label class="control-label" asp-for="@Model.AmountToDeposit">Amount to deposit</label>
+                <input asp-class="form-control" asp-for="@Model.AmountToDeposit"/>
+                <span asp-validation-for="@Model.AmountToDeposit" class="text-danger"></span>
+            </div>
+            <div class="form-group m-1">
+                <input class="btn btn-outline-success float right" type="submit" value="Deposit" />
+                <a class="btn btn-outline-secondary" href="@Model.ReturnUrl">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

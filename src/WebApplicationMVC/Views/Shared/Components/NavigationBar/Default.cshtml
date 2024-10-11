@@ -2,6 +2,7 @@
 
 @{
     string selectedPage = ViewBag.SelectedPage;
+    var returnUrl = (this.ViewContext?.HttpContext?.Request?.Path ?? "/") + this.ViewContext?.HttpContext.Request.QueryString;
 }
 
 <div class="container-fluid flex-wrap">
@@ -15,7 +16,7 @@
                 <input type="text" name="productName" id="productName" style="min-width: 0%; max-width: 15rem;" class="border rounded-pill rounded-start-0 border-start-0 p-2 flex-grow-1 flex-shrink-1" type="text" placeholder="Search product..." />
             </form>
         </div>
-        <div class="col-6">
+        <div class="col-5">
             <div class="row">
                 <div class="col-auto p-0 border border-top-0 border-bottom-0">
                     <a asp-controller="Home" asp-action="Index" class="btn p-0 pe-2 ps-2">Home</a>
@@ -45,8 +46,16 @@
         </div>
         <div class="col-auto">
             <div class="row">
+                @if (Model.UserContext.IsAuthenticated)
+                {
+                    <div class="col-auto p-0 border border-top-0 border-bottom-0">
+                        <a class="btn p-0 pe-2 ps-2" asp-controller="CashDeposit" asp-action="Deposit" asp-route-cashDepositId="@Model.CashDeposit.Id" asp-route-returnUrl="@returnUrl">
+                            <span>@Model.CashDeposit.CurrentMoneyBalance.ToString("c")&nbsp;<i class="fa-solid fa-coins"></i></span>
+                        </a>
+                    </div>
+                }
                 <div class="col-auto p-0 border border-top-0 border-bottom-0">
-                    @if(!Model.UserContext.IsAuthenticated)
+                    @if (!Model.UserContext.IsAuthenticated)
                     {
                         <a class="btn p-0 pe-2 ps-2" asp-controller="Account" asp-action="Login">Sign In</a>
                     }

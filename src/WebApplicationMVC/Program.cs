@@ -103,6 +103,12 @@ app.MapControllerRoute(
     defaults: new { Controller = "OrderAdmin", Action = "Index", page = 1 }
     );
 
+app.MapControllerRoute(
+    name: "cashDeposit",
+    pattern: "CashDeposit/Deposit/{cashDepositId:guid}",
+    defaults: new { Controller = "CashDeposit", Action = "Deposit"}
+    );
+
 app.MapDefaultControllerRoute();
 
 SeedData.EnsurePopulated(app);

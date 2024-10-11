@@ -4,6 +4,7 @@ using Store.Application.Interfaces.IdentityManagers;
 using Store.Application.Interfaces.Mapper;
 using Store.Application.Interfaces.Services;
 using Store.Application.Responses;
+using Store.Application.Utils;
 using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
 
@@ -31,7 +32,7 @@ namespace Store.Application.Services
             _signInManager = signInManager;
         }
         /// <summary>
-        /// Authenticates a user by their login and password.
+        /// Authenticates a user by their login and password. If user has no cash deposits, new one is created.
         /// </summary>
         /// <param name="login">The user's login.</param>
         /// <param name="password">The user's password.</param>
@@ -53,6 +54,18 @@ namespace Store.Application.Services
                 if (!result)
                 {
                     return new LogInResponse() { SignedIn = false, LoginFound = true, IsPasswordCorrect = true };
+                }
+
+                var foundCashDeposits = await _unitOfWork.CashDepositRepository.GetByFilterAsync(cd => cd.UserId == foundUser.Id);
+                var roles = await _userManager.GetRolesAsync(foundUser);
+                if (!foundCashDeposits.Any())
+                {
+                    _unitOfWork.BeginTransaction();
+                    if (roles.Contains(Roles.Admin))
+                        _unitOfWork.CashDepositRepository.Add(CashDepositFactory.CreateEmptyAdminCashDeposit(foundUser.Id));
+                    else
+                        _unitOfWork.CashDepositRepository.Add(CashDepositFactory.CreateEmptyUserCashDeposit(foundUser.Id));
+                    await _unitOfWork.CommitAsync();
                 }
 
                 return new LogInResponse() { UserId = foundUser.Id, SignedIn = true, LoginFound = true, IsPasswordCorrect = true, UserRoles = (await _userManager.GetRolesAsync(foundUser)).ToArray() };
@@ -79,7 +92,7 @@ namespace Store.Application.Services
         }
 
         /// <summary>
-        /// Registers a new user.
+        /// Registers a new user. Creates new cash deposit along with user.
         /// </summary>
         /// <param name="userRegistrationData">The data for the new user.</param>
         /// <returns>The unique identifier of the newly registered user.</returns>
@@ -93,7 +106,17 @@ namespace Store.Application.Services
                 var response = await _userManager.CreateAsync(newUser, userRegistrationData.PasswordHash);
                 await _userManager.AddToRoleAsync(newUser, Roles.User);
                 if (response.Success)
+                {
                     response.User = newUser;
+                    _unitOfWork.BeginTransaction();
+                    _unitOfWork.CashDepositRepository.Add(new UserCashDeposit()
+                    {
+                        UserId = newUser.Id,
+                        CurrentMoneyBalanceSetter = 0.00M
+                    });
+                    await _unitOfWork.CommitAsync();
+                }
+
 
                 return response;
             }

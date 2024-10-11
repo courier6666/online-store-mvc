@@ -24,7 +24,7 @@ builder.Services.AddSingleton<IUserFactory, UserFactory>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AWSdb"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StoreDb"));
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>().AddEntityFrameworkStores<ApplicationDbContext>();

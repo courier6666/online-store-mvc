@@ -46,14 +46,14 @@
     string selectedOrderByClass = "text-white bg-black";
     string unselectedOrderByClass = "text-black bg-white";
 
-    List<(string, string, string)> controllerActionAndNameOfProductAction = new List<(string, string, string)>
+    List<(string, string, string, bool)> controllerActionAndNameOfProductAction = new List<(string, string, string, bool)>
     {
-        ("Cart", "AddToCart", "Add to cart"),
+        ("Cart", "AddToCart", "Add to cart", false),
     };
     if (Model.IsUserAdmin)
     {
-        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Edit", "Edit"));
-        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Delete", "Delete"));
+        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Edit", "Edit", true));
+        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Delete", "Delete", true));
     }
 }
 
@@ -161,11 +161,14 @@
                             <td>@product.Price.ToString("c")</td>
                             <td>@product.DateOfCreation.ToString("U")</td>
                             <td>
-                                @foreach (var (controller, action, name) in controllerActionAndNameOfProductAction)
+                                @foreach (var (controller, action, name, hasReturnUrl) in controllerActionAndNameOfProductAction)
                                 {
-                                    <form asp-controller="@controller" asp-action="@action" method="get">
+                                    <form asp-controller="@controller" asp-action="@action" method="post">
                                         <input type="hidden" name="productId" value="@product.Id" />
-                                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        @if (hasReturnUrl)
+                                        {
+                                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                        }
                                         <button type="submit" class="btn text-white bg-black m-1">
                                             @name
                                         </button>
@@ -178,7 +181,7 @@
             </table>
             @if (Model.IsUserAdmin)
             {
-                <form class="mw-100" asp-controller="ProductAdmin" asp-action="Create" method="get">
+                <form class="mw-100" asp-controller="ProductAdmin" asp-action="Create" method="post">
                     <input type="hidden" name="returnUrl" value="@returnUrl" />
                     <button type="submit" class="btn text-white bg-black w-100">
                         Add New Product

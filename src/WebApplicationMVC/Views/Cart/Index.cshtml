@@ -2,7 +2,7 @@
 
 <div class="m-2">
     <h2 class="text-center">Cart</h2>
-
+    <h3 class="text-center">Cart is empty!</h3>
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
@@ -41,7 +41,10 @@
             </tr>
         </tbody>
     </table>
-    <div>
-        <a asp-controller="Order" asp-action="CreateOrderFromCart" class="btn border text-white bg-black">Order</a>
-    </div>
+    @if (Model.ProductDetails.Any())
+    {
+        <div>
+            <a asp-controller="Order" asp-action="CreateOrderFromCart" class="btn border text-white bg-black">Order</a>
+        </div>
+    }
 </div>

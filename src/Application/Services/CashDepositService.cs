@@ -70,7 +70,7 @@ namespace Store.Application.Services
         public async Task<IEnumerable<CashDepositDto>> GetAllCashDepositsForUser(Guid userId)
         {
 
-            var cashDeposits = await _unitOfWork.CashDepositRepository.GetAllAsync();
+            var cashDeposits = await _unitOfWork.CashDepositRepository.GetByFilterAsync(cd => cd.UserId == userId);
             return _customMapper.MapEnumerable<CashDeposit, CashDepositDto>(cashDeposits);
         }
         /// <summary>

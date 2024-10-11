@@ -2,7 +2,10 @@
 
 <div class="m-2">
     <h2 class="text-center">Cart</h2>
-    <h3 class="text-center">Cart is empty!</h3>
+    @if (!Model.ProductDetails.Any())
+    {
+        <h3 class="text-center">Cart is empty!</h3>
+    }
     <table class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr>

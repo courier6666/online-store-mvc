@@ -19,6 +19,10 @@ namespace Store.WebApplicationMVC.Controllers
         public async Task<IActionResult> Deposit(Guid cashDepositId, string returnUrl = "/")
         {
             var cashDeposit = await _cashDepositService.GetByIdAsync(cashDepositId);
+            if(cashDeposit.UserId != _userContext.UserId.Value)
+            {
+                return View("Error");
+            }
             return View(new CashDepositViewModel()
             {
                 CashDeposit = cashDeposit,
@@ -28,7 +32,15 @@ namespace Store.WebApplicationMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Deposit([FromForm] CashDepositViewModel cashDepositViewModel)
         {
-            await _cashDepositService.DepositAsync(_userContext.UserId.Value, cashDepositViewModel.CashDeposit.Id, cashDepositViewModel.AmountToDeposit);
+            try
+            {
+                await _cashDepositService.DepositAsync(_userContext.UserId.Value, cashDepositViewModel.CashDeposit.Id, cashDepositViewModel.AmountToDeposit);
+            }
+            catch(Exception ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+                return View(cashDepositViewModel);
+            }
             return Redirect(cashDepositViewModel.ReturnUrl);
         }
     }

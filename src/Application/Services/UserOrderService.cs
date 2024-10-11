@@ -78,10 +78,10 @@ namespace Store.Application.Services
                 });
                 await _unitOfWork.CommitAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException($"Failed to add product to existing order!", innerException: e);
+                throw ex;
             }
         }
         /// <summary>
@@ -147,7 +147,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException($"Failed to cancel order for user!", innerException: ex);
+                throw ex;
             }
         }
         /// <summary>
@@ -193,10 +193,10 @@ namespace Store.Application.Services
                 await _unitOfWork.CommitAsync();
                 return createdOrder.Id;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to create order!", innerException: e);
+                throw ex;
             }
         }
         /// <summary>
@@ -269,7 +269,7 @@ namespace Store.Application.Services
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to pay for order.", innerException: ex);
+                throw ex;
             }
         }
 
@@ -321,10 +321,10 @@ namespace Store.Application.Services
                 await _unitOfWork.CommitAsync();
                 return createdOrder.Id;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 _unitOfWork.Rollback();
-                throw new InvalidOperationException("Failed to create order!", innerException: e);
+                throw ex;
             }
         }
 

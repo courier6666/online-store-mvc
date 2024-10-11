@@ -18,10 +18,21 @@
                 <td>@Model.Order.CreatedDate.ToString("g")</td>
             </tr>
     </table>
-    <form asp-controller="Order" asp-action="CancelOrder" method="post">
-        <input type="hidden" asp-for="@Model.Order.Id" name="orderId" />
-        <input class="btn bg-black text-white" type="submit" value="Cancel order" />
-    </form>
+
+
+    <div class="mt-2 mb-2">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="d-flex flex-row gap-2">
+            <form asp-controller="Order" asp-action="CancelOrder" method="post">
+                <input type="hidden" asp-for="@Model.Order.Id" name="orderId" />
+                <input class="btn bg-black text-white" type="submit" value="Cancel order" />
+            </form>
+            <form asp-controller="Order" asp-action="PayForOrder" method="post">
+                <input type="hidden" asp-for="@Model.Order.Id" name="orderId" />
+                <input class="btn bg-black text-white" type="submit" value="Pay for order" />
+            </form>
+        </div>
+    </div>
     <h3>Products ordered:</h3>
     <table class="table table-striped table-bordered shadow-sm">
         <thead class="thead-dark">

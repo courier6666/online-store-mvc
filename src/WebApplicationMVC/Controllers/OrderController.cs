@@ -7,6 +7,7 @@ using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
 using Store.WebApplicationMVC.Models;
 using Store.WebApplicationMVC.ViewModel;
+using System.Net.WebSockets;
 
 namespace Store.WebApplicationMVC.Controllers
 {
@@ -15,12 +16,14 @@ namespace Store.WebApplicationMVC.Controllers
     {
         private readonly IUserContext _userContext;
         private readonly IUserOrderService _userOrderService;
+        private readonly ICashDepositService _cashDepositService;
         private readonly ICartService _cartService;
-        public OrderController(IUserContext userContext, IUserOrderService userOrderService, ICartService cartService)
+        public OrderController(IUserContext userContext, IUserOrderService userOrderService, ICartService cartService, ICashDepositService cashDepositService)
         {
             _userContext = userContext;
             _userOrderService = userOrderService;
             _cartService = cartService;
+            _cashDepositService = cashDepositService;
         }
         private int PageSize { get; } = 20;
         [Authorize]
@@ -59,6 +62,10 @@ namespace Store.WebApplicationMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Details(Guid orderId)
         {
+            var order = await _userOrderService.GetOrderAsync(orderId);
+            if (order.OrderAuthorId != _userContext.UserId.Value)
+                return View("Error");
+
             return View(new OrderDetailViewModel()
             {
                 Order = await _userOrderService.GetOrderAsync(orderId),
@@ -76,8 +83,35 @@ namespace Store.WebApplicationMVC.Controllers
         }
         [Authorize]
         [HttpPost]
+        public async Task<IActionResult> PayForOrder(Guid orderId)
+        {
+            var order = await _userOrderService.GetOrderAsync(orderId);
+            if (order.OrderAuthorId != _userContext.UserId.Value)
+                return View("Error");
+
+            try
+            {
+                var cashDeposit = (await _cashDepositService.GetAllCashDepositsForUser(_userContext.UserId.Value)).First();
+                await _userOrderService.PayForOrderAsync(orderId, _userContext.UserId.Value, cashDeposit.Id);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+
+            }
+            var foundOrder = await _userOrderService.GetOrderAsync(orderId);
+            return View("Details", new OrderDetailViewModel()
+            {
+                Order = foundOrder,
+            });
+        }
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> CancelOrder(Guid orderId)
         {
+            var order = await _userOrderService.GetOrderAsync(orderId);
+            if (order.OrderAuthorId != _userContext.UserId.Value)
+                return View("Error");
             try
             {
                 await _userOrderService.CancelOrderAsync(orderId, _userContext.UserId.Value);

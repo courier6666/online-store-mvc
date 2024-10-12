@@ -5,10 +5,10 @@
     var returnUrl = (this.ViewContext?.HttpContext?.Request?.Path ?? "/") + this.ViewContext?.HttpContext.Request.QueryString;
 }
 
-<div class="container-fluid flex-wrap">
-    <div class="row">
-        <span class="col-auto navbar-brand ml-2 pt-1"><i class="fa-solid fa-shop fs-3"></i></span>
-        <div class="col-4">
+<div class="container-fluid">
+    <div class="d-flex flex-row justify-content-between">
+        <div class="d-flex flex-row gap-3">
+            <span class="col-auto navbar-brand ml-2 pt-1"><i class="fa-solid fa-shop fs-3"></i></span>
             <form class="input-group input-group-highlight d-flex flex-nowrap" asp-controller="Home" asp-action="FindByProductName" typeof="post">
                 <button class="border rounded-pill rounded-end-0 border-end-0 p-2 bg-white">
                     <span><i class="fa-solid fa-search"></i></span>
@@ -16,7 +16,7 @@
                 <input type="text" name="productName" id="productName" style="min-width: 0%; max-width: 15rem;" class="border rounded-pill rounded-start-0 border-start-0 p-2 flex-grow-1 flex-shrink-1" type="text" placeholder="Search product..." />
             </form>
         </div>
-        <div class="col-5">
+        <div>
             <div class="row">
                 <div class="col-auto p-0 border border-top-0 border-bottom-0">
                     <a asp-controller="Home" asp-action="Index" class="btn p-0 pe-2 ps-2">Home</a>
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-auto">
+        <div>
             <div class="row">
                 @if (Model.UserContext.IsAuthenticated)
                 {

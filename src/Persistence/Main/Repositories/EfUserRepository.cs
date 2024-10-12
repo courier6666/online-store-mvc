@@ -44,7 +44,7 @@ namespace Store.Persistence.Main.Repositories
 
         public async Task<IUser> GetByIdAsync(Guid id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(id));
+            var user = await _context.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id.Equals(id));
             user.Roles = await _userManager.GetRolesAsync(user);
             return user;
         }

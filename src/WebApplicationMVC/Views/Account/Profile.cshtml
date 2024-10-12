@@ -1,0 +1,64 @@
+﻿@model ProfileViewModel
+
+@{
+    var cultureInfo = new CultureInfo("en-US");
+    CultureInfo.CurrentCulture = cultureInfo;
+    DateTime birthday = Model.CurrentUser.Birthday.ToDateTime(new TimeOnly(0));
+}
+
+<div class="row">
+    <div class="col mx-auto" style="max-width:30%">
+        <h3>Profile</h3>
+
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.FirstName" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.FirstName" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.LastName" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.LastName" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.Email" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.Email" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.PhoneNumber" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.PhoneNumber" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@birthday" class="control-label"></label>
+            <input readonly asp-for="@birthday" type="date" class="form-control"/>
+            <span asp-validation-for="@birthday" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.Login" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.Login" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.Login" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.Address.Country" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.Address.Country" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.Address.Country" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.Address.State" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.Address.State" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.Address.State" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.Address.City" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.Address.City" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.Address.City" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.CurrentUser.Address.Street" class="control-label"></label>
+            <input readonly asp-for="@Model.CurrentUser.Address.Street" class="form-control" />
+            <span asp-validation-for="@Model.CurrentUser.Address.Street" class="text-danger"></span>
+        </div>
+    </div>
+</div>

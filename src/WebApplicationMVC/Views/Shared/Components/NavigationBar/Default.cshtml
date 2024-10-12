@@ -53,6 +53,11 @@
                             <span>@Model.CashDeposit.CurrentMoneyBalance.ToString("c")&nbsp;<i class="fa-solid fa-coins"></i></span>
                         </a>
                     </div>
+                    <div class="col-auto p-0 border border-top-0 border-bottom-0">
+                        <a class="btn p-0 pe-2 ps-2" asp-controller="Account" asp-action="Profile">
+                            <span><i class="fa-solid fa-user text-white bg-black p-2 rounded-circle" ></i>&nbsp;Profile</span>
+                        </a>
+                    </div>
                 }
                 <div class="col-auto p-0 border border-top-0 border-bottom-0">
                     @if (!Model.UserContext.IsAuthenticated)

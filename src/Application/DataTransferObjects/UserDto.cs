@@ -1,6 +1,6 @@
 ﻿namespace Store.Application.DataTransferObjects
 {
-    public class UserRegistrationDto
+    public class UserDto
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -10,5 +10,6 @@
         public string Login { get; set; }
         public string PasswordHash { get; set; }
         public AddressDto Address { get; set; }
+        public string[]? Roles { get; set; }
     }
 }

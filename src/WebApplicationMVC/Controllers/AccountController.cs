@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.DataTransferObjects;
 using Store.Application.Interfaces.Services;
+using Store.Domain.Entities.Interfaces;
 using Store.WebApplicationMVC.ViewModel;
 
 namespace Store.WebApplicationMVC.Controllers
@@ -10,9 +11,11 @@ namespace Store.WebApplicationMVC.Controllers
     public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        public AccountController(IUserService userService)
+        private readonly IUserContext _userContext;
+        public AccountController(IUserService userService, IUserContext userContext)
         {
             _userService = userService;
+            _userContext = userContext;
         }
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = "/")
@@ -66,7 +69,7 @@ namespace Store.WebApplicationMVC.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromForm] RegistrationViewModel registrationViewModel)
         {
-            var userRegistrationDto = new UserRegistrationDto()
+            var userRegistrationDto = new UserDto()
             {
                 FirstName = registrationViewModel.FirstName,
                 LastName = registrationViewModel.LastName,
@@ -96,6 +99,13 @@ namespace Store.WebApplicationMVC.Controllers
         {
             await _userService.LogOutAsync();
             return RedirectToAction("Login");
+        }
+        public async Task<IActionResult> Profile()
+        {
+            return View(new ProfileViewModel()
+            {
+                CurrentUser = await _userService.FindUserById(_userContext.UserId.Value)
+            });
         }
     }
 }

@@ -97,7 +97,7 @@ namespace Store.Application.Services
         /// <param name="userRegistrationData">The data for the new user.</param>
         /// <returns>The unique identifier of the newly registered user.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the operation to register a new user fails.</exception>
-        public async Task<CreateUserResponse> RegisterAsync(UserRegistrationDto userRegistrationData)
+        public async Task<CreateUserResponse> RegisterAsync(UserDto userRegistrationData)
         {
             IUser newUser = _userFactory.CreateNewEmptyUser();
             _customMapper.MapToExisting(userRegistrationData, ref newUser);
@@ -132,12 +132,12 @@ namespace Store.Application.Services
         /// <param name="login">The login to check.</param>
         /// <returns><c>true</c> if a user with the specified login exists; otherwise, <c>false</c>.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the operation to find the user by login fails.</exception>
-        public async Task<IUser> FindUserByLogin(string login)
+        public async Task<UserDto> FindUserByLogin(string login)
         {
             try
             {
                 var foundUser = await _userManager.FindByNameAsync(login);
-                return foundUser;
+                return _customMapper.Map<IUser, UserDto>(foundUser);
             }
             catch (Exception e)
             {
@@ -162,15 +162,15 @@ namespace Store.Application.Services
             }
         }
 
-        public async Task<IUser> FindUserById(Guid userId)
+        public async Task<UserDto> FindUserById(Guid userId)
         {
             try
             {
                 _unitOfWork.BeginTransaction();
                 var foundUser = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-                var roles = (await _userManager.GetRolesAsync(foundUser)).ToArray();
                 await _unitOfWork.CommitAsync();
-                return foundUser;
+                var userDto = _customMapper.Map<IUser, UserDto>(foundUser);
+                return userDto;
             }
             catch (Exception e)
             {

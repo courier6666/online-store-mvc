@@ -24,10 +24,12 @@ namespace Store.Infrastructure.Mappers
                 cfg.CreateMap<CashDeposit, CashDepositDto>();
                 cfg.CreateMap<Address, AddressDto>();
                 cfg.CreateMap<AddressDto, Address>();
-                cfg.CreateMap<UserRegistrationDto, IUser>().ForMember(u => u.Address,
+                cfg.CreateMap<UserDto, IUser>().ForMember(u => u.Address,
                     o => o.MapFrom(udto => udto.Address)).
                     ForMember(u => u.Birthday, o => o.MapFrom(udto => udto.Birthday)).
                     ForMember(udto => udto.PasswordHash, opt => opt.Ignore());
+                cfg.CreateMap<IUser, UserDto>().ForMember(udto => udto.Address, o => o.MapFrom(u => u.Address)).
+                    ForMember(udto => udto.Birthday, o => o.MapFrom(u => u.Birthday));
                 cfg.CreateMap<ProductDto, Product>();
                 cfg.CreateMap<Product, ProductDto>().
                     ForMember(p => p.DateOfCreation, o => o.MapFrom(p => p.CreatedDate));

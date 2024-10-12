@@ -9,11 +9,11 @@ namespace Store.Application.Interfaces.Services
     /// </summary>
     public interface IUserService
     {
-        Task<IUser> FindUserById(Guid userId);
-        Task<CreateUserResponse> RegisterAsync(UserRegistrationDto userRegistrationData);
+        Task<UserDto> FindUserById(Guid userId);
+        Task<CreateUserResponse> RegisterAsync(UserDto userRegistrationData);
         Task<LogInResponse> LogInAsync(string login, string password);
         Task<bool> LogOutAsync();
-        Task<IUser> FindUserByLogin(string login);
+        Task<UserDto> FindUserByLogin(string login);
         Task<string[]?> GetRolesByUserIdAsync(Guid id);
     }
 }

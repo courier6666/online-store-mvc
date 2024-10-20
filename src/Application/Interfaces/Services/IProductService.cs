@@ -14,5 +14,8 @@ namespace Store.Application.Interfaces.Services
         Task<PagedList<ProductDto>> GetPagedProductsAsync(int page, int pageSize);
         Task<PagedList<ProductDto>> GetPagedProductsAsync(ProductsPageQuery productsPageQuery);
         Task<IEnumerable<string>> GetAllCategoriesAsync();
+        Task<(bool isFavourite, Guid productId)[]> AreFavouriteProductsAsync(Guid userId, Guid[] productIds);
+        Task RemoveFavouriteProductForUserAsync(Guid userId, Guid productId);
+        Task AddFavouriteProductForUserAsync(Guid userId, Guid productId);
     }
 }

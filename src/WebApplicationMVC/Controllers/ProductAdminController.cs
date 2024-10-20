@@ -39,6 +39,7 @@ namespace Store.WebApplicationMVC.Controllers
 
             return Redirect(product.ReturnUrl ?? "/");
         }
+        
         public async Task<IActionResult> Edit(Guid productId, string returnUrl = "/")
         {
             var product = await _productService.GetByIdAsync(productId);
@@ -75,9 +76,15 @@ namespace Store.WebApplicationMVC.Controllers
 
             return View(new ProductViewModel()
             {
+                Id = product.Id,
+                Name = product.Name,
+                Category = product.Category,
+                Description = product.Description,
+                Price = product.Price,
                 ReturnUrl = returnUrl
             });
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] ProductViewModel product)
         {

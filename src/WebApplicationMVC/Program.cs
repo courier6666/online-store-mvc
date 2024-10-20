@@ -92,6 +92,16 @@ app.MapControllerRoute(
     );
 
 app.MapControllerRoute(
+    name: "setFavouriteProduct",
+    pattern: "Products/SetFavourite/{productId:guid}",
+    defaults: new { Controller = "Home", Action= "SetFavourite" });
+
+app.MapControllerRoute(
+    name: "setUnfavouriteProduct",
+    pattern: "Products/SetUnfavourite/{productId:guid}",
+    defaults: new { Controller = "Home", Action = "SetUnfavourite" });
+
+app.MapControllerRoute(
     name: "paginationOrder",
     pattern: "Orders/Page{page:int}",
     defaults: new { Controller = "Order", Action = "Index", page = 1 }

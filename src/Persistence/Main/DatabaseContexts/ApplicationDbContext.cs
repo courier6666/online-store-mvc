@@ -40,6 +40,7 @@ namespace Store.Persistence.Main.DatabaseContexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<PaymentDetails> PaymentDetails { get; set; }
+        public DbSet<FavouriteProduct> FavouriteProducts { get; set; }
         public void Clear()
         {
             CashDeposits.Clear();

@@ -4,6 +4,7 @@ using Store.Application.Interfaces.Services;
 using Store.Application.Queries;
 using Store.Domain.Entities;
 using Store.Domain.Entities.Interfaces;
+using Store.Domain.Entities.Model;
 using Store.Domain.PagedLists;
 using System.Linq.Expressions;
 
@@ -219,6 +220,55 @@ namespace Store.Application.Services
             {
                 _unitOfWork.Rollback();
                 throw new InvalidOperationException("Failed to update product!", innerException: e);
+            }
+        }
+
+        public async Task<(bool isFavourite, Guid productId)[]> AreFavouriteProductsAsync(Guid userId, Guid[] productIds)
+        {
+            var favouriteProducts = await _unitOfWork.FavoriteProductsRepository.AreTheseFavoruiteProductsOfUserAsync(userId, productIds);
+            var favouriteProductsSet = new HashSet<Guid>(favouriteProducts);
+
+            return productIds.
+                Select(id => (favouriteProductsSet.Contains(id), id)).
+                ToArray();
+        }
+
+        public async Task RemoveFavouriteProductForUserAsync(Guid userId, Guid productId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+                var foundFavProduct = await _unitOfWork.FavoriteProductsRepository.GetByIdAsync((userId, productId));
+                _unitOfWork.FavoriteProductsRepository.Delete(foundFavProduct);
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch(Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
+
+        public async Task AddFavouriteProductForUserAsync(Guid userId, Guid productId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+                _unitOfWork.FavoriteProductsRepository.Add(new FavouriteProduct()
+                {
+                    ProductId = productId,
+                    UserId = userId,
+                });
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
             }
         }
     }

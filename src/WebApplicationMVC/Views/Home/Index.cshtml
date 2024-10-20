@@ -46,15 +46,16 @@
     string selectedOrderByClass = "text-white bg-black";
     string unselectedOrderByClass = "text-black bg-white";
 
-    List<(string, string, string, bool)> controllerActionAndNameOfProductAction = new List<(string, string, string, bool)>
-    {
-        ("Cart", "AddToCart", "Add to cart", false),
-    };
+    List<(string, string, string)> controllerActionAndNameOfProductAction = new List<(string, string, string)>();
     if (Model.IsUserAdmin)
     {
-        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Edit", "Edit", true));
-        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Delete", "Delete", true));
+        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Edit", "Edit"));
+        controllerActionAndNameOfProductAction.Add(("ProductAdmin", "Delete", "Delete"));
     }
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/OnFavouriteClick.js"></script>
 }
 
 <div class="container-fluid">
@@ -155,25 +156,44 @@
                     @foreach (var product in Model.Products)
                     {
                         <tr>
-                            <td>@product.Name</td>
+                            <td>
+                                
+                                @if (Model.IsUserAuthenticated)
+                                {
+                                    <span onclick="onFavouriteClick('product@(product.Id)')" id="product@(product.Id)" data-isfav="@Model.FavouriteProductsForPage.Contains(product.Id.Value)">
+                                        <i class="@(Model.FavouriteProductsForPage.Contains(product.Id.Value) ? "fa-solid" : "fa-regular") fa-star"></i>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a style="text-decoration: none;" class="text-black" asp-controller="Account" , asp-action="Login" asp-route-returnUrl="@returnUrl">
+                                        <span><i class="@(Model.FavouriteProductsForPage.Contains(product.Id.Value) ? "fa-solid" : "fa-regular") fa-star"></i></span>
+                                    </a>
+                                }
+                                <span>@product.Name</span>
+                                
+                            </td>
                             <td>@product.Category</td>
                             <td>@product.Description</td>
                             <td>@product.Price.ToString("c")</td>
                             <td>@product.DateOfCreation.ToString("U")</td>
                             <td>
-                                @foreach (var (controller, action, name, hasReturnUrl) in controllerActionAndNameOfProductAction)
-                                {
-                                    <form asp-controller="@controller" asp-action="@action" method="post">
-                                        <input type="hidden" name="productId" value="@product.Id" />
-                                        @if (hasReturnUrl)
-                                        {
-                                            <input type="hidden" name="returnUrl" value="@returnUrl" />
-                                        }
-                                        <button type="submit" class="btn text-white bg-black m-1">
-                                            @name
-                                        </button>
-                                    </form>
-                                }
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <button type="submit" class="btn text-white bg-black m-1">
+                                        Add to cart
+                                    </button>
+                                </form>
+                                <div class="d-flex flex-column">
+                                    @foreach (var (controller, action, name) in controllerActionAndNameOfProductAction)
+                                    {
+                                        <a asp-controller="@controller"
+                                           asp-action="@action"
+                                           asp-route-productId="@product.Id"
+                                           asp-route-returnUrl="@returnUrl"
+                                           class="btn text-white bg-black m-1">@name</a>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }

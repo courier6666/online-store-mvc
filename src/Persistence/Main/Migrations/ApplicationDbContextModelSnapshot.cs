@@ -294,6 +294,21 @@ namespace Store.Persistence.Main.Migrations
                     b.HasDiscriminator<string>("DepositType").HasValue("CashDeposit");
                 });
 
+            modelBuilder.Entity("Store.Domain.Entities.Model.FavouriteProduct", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("FavoruiteProducts", (string)null);
+                });
+
             modelBuilder.Entity("Store.Domain.Entities.Model.PaymentDetails", b =>
                 {
                     b.Property<Guid>("Id")
@@ -690,6 +705,25 @@ namespace Store.Persistence.Main.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Store.Domain.Entities.Model.FavouriteProduct", b =>
+                {
+                    b.HasOne("Store.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Store.Persistence.Main.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });

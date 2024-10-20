@@ -19,6 +19,7 @@ namespace Store.Persistence.Main.UnitOfWorks
         private IUserRepository? _userRepository;
         private IPaymentDetailsRepository? _paymentDetailsRepository;
         private IAddressRepository? _addressRepository;
+        private IFavouriteProductsRepository? _favouriteProductsRepository;
         private RoleManager<IdentityRole<Guid>> _roleManager;
         private UserManager<AppUser> _userManager;
         public EfCoreUnitOfWork(ApplicationDbContext context, RoleManager<IdentityRole<Guid>> roleManager, UserManager<AppUser> userManager)
@@ -87,6 +88,15 @@ namespace Store.Persistence.Main.UnitOfWorks
             {
                 _addressRepository ??= new EfAddressRepository(_context);
                 return _addressRepository;
+            }
+        }
+
+        public IFavouriteProductsRepository FavoriteProductsRepository
+        {
+            get
+            {
+                _favouriteProductsRepository ??= new EfFavouriteProductsRepository(_context);
+                return _favouriteProductsRepository;
             }
         }
 

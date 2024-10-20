@@ -18,6 +18,7 @@ namespace Store.Domain.Entities.Interfaces
         IUserRepository UserRepository { get; }
         IPaymentDetailsRepository PaymentDetailsRepository { get; }
         IAddressRepository AddressRepository { get; }
+        IFavouriteProductsRepository FavoriteProductsRepository { get; }
     }
 
 }

@@ -104,6 +104,14 @@
                         </select>
                     </div>
                 </div>
+                <div style="height: 1px;" class="border mt-2 mb-2"></div>
+                <div>
+                    <label class="control-label" asp-for="@Model.Category"><b>Favourite</b></label>
+                    <div class="form-group mt-2 mb-2">
+                        <input class="form-check-input" asp-for="@Model.AreFavourite" name="favouriteOnly" />
+                        <label class="form-check-label" asp-for="@Model.AreFavourite">Only favourite products</label>
+                    </div>
+                </div>
                 <input type="hidden" asp-for="@Model.PagingInfo.Page" />
                 <button type="submit" class="btn btn-outline-dark">
                     Apply

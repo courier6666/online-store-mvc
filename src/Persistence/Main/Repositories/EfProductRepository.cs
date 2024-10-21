@@ -80,6 +80,37 @@ namespace Store.Persistence.Main.Repositories
             return await PagedListCreator.CreateAsync(_context.Products.OrderByDescending(selector), page, pageSize);
         }
 
+        //quries for favourite products
+
+        public async Task<PagedList<Product>> GetPagedListFavouriteAsync(int page, int pageSize, Guid userId)
+        {
+            return await PagedListCreator.CreateAsync(_context.Products.Where(p => _context.FavouriteProducts.
+            Where(fp => fp.UserId == userId).
+            Select(fp => fp.ProductId).Contains(p.Id)),
+            page, pageSize);
+        }
+
+        public async Task<PagedList<Product>> GetPagedListFilterFavouriteAsync(int page, int pageSize, Expression<Func<Product, bool>> filter, Guid userId)
+        {
+            return await PagedListCreator.CreateAsync(_context.Products.Where(filter).Where(p => _context.FavouriteProducts.
+            Where(fp => fp.UserId == userId).
+            Select(fp => fp.ProductId).Contains(p.Id)), page, pageSize);
+        }
+
+        public async Task<PagedList<Product>> GetPagedListFilterAndOrderFavouriteAsync<TOrderBy>(int page, int pageSize, Expression<Func<Product, bool>> filter, Expression<Func<Product, TOrderBy>> selector, Guid userId)
+        {
+            return await PagedListCreator.CreateAsync(_context.Products.Where(filter).Where(p => _context.FavouriteProducts.
+            Where(fp => fp.UserId == userId).
+            Select(fp => fp.ProductId).Contains(p.Id)).OrderBy(selector), page, pageSize);
+        }
+
+        public async Task<PagedList<Product>> GetPagedListFilterAndOrderDescFavouriteAsync<TOrderBy>(int page, int pageSize, Expression<Func<Product, bool>> filter, Expression<Func<Product, TOrderBy>> selector, Guid userId)
+        {
+            return await PagedListCreator.CreateAsync(_context.Products.Where(filter).Where(p => _context.FavouriteProducts.
+            Where(fp => fp.UserId == userId).
+            Select(fp => fp.ProductId).Contains(p.Id)).OrderByDescending(selector), page, pageSize);
+        }
+
         public async Task<IEnumerable<string>> GetAllCategoriesAsync()
         {
             return await _context.Products.

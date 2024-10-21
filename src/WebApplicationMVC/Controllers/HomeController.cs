@@ -27,6 +27,7 @@ namespace Store.WebApplicationMVC.Controllers
             decimal? minPrice,
             decimal? maxPrice,
             string? productName = null,
+            bool favouriteOnly = false,
             int page = 1,
             string? order = null)
         {
@@ -39,7 +40,8 @@ namespace Store.WebApplicationMVC.Controllers
                 Page = page,
                 PageSize = PageSize,
                 SortOrder = order,
-                ProductName = productName
+                ProductName = productName,
+                FavouriteProductsOfUser = favouriteOnly && _userContext.IsAuthenticated ? _userContext.UserId.Value : null
             });
 
             HashSet<Guid> favouriteProducts = new HashSet<Guid>();
@@ -71,6 +73,7 @@ namespace Store.WebApplicationMVC.Controllers
                 Category = category,
                 MaxPrice = maxPrice,
                 MinPrice = minPrice,
+                AreFavourite = favouriteOnly,
                 AllCategories = await _productService.GetAllCategoriesAsync(),
                 CurrentValueSortedBy = order,
                 ProductName = productName,
@@ -87,9 +90,10 @@ namespace Store.WebApplicationMVC.Controllers
         public IActionResult ApplyCriteriaSearchForm(string? category,
             decimal? minPrice,
             decimal? maxPrice,
-            string? productName = null)
+            bool favouriteOnly,
+            string? productName)
         {
-            return RedirectToAction("Index", new { category, minPrice, maxPrice, productName });
+            return RedirectToAction("Index", new { category, minPrice, maxPrice, productName, favouriteOnly});
         }
         [HttpPost]
         public IActionResult FindByProductName(string productName)

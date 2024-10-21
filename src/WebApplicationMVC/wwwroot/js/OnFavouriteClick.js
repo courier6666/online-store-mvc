@@ -3,7 +3,7 @@
 function setProductFavourite(productId, onSuccess) {
     $.ajax({
         type: "POST",
-        url: `Products/SetFavourite/${productId}`,
+        url: `/Products/SetFavourite/${productId}`,
         success: function (result) {
             onSuccess();
         },
@@ -16,7 +16,7 @@ function setProductFavourite(productId, onSuccess) {
 function removeProductFavourite(productId, onSuccess) {
     $.ajax({
         type: "POST",
-        url: `Products/SetUnfavourite/${productId}`,
+        url: `/Products/SetUnfavourite/${productId}`,
         success: function (result) {
             onSuccess();
         },

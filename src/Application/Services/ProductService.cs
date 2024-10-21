@@ -159,29 +159,74 @@ namespace Store.Application.Services
                 switch (productsPageQuery.SortOrder)
                 {
                     case "newest":
-                        pagedProducts = await _unitOfWork.
-                            ProductRepository.
-                            GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
+                        if (productsPageQuery.FavouriteProductsOfUser == null)
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
+                        }
+                        else
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderDescFavouriteAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate, productsPageQuery.FavouriteProductsOfUser.Value);
+                        }
                         break;
                     case "oldest":
-                        pagedProducts = await _unitOfWork.
-                            ProductRepository.
-                            GetPagedListFilterAndOrderAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
+                        if (productsPageQuery.FavouriteProductsOfUser == null)
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate);
+                        }
+                        else
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderFavouriteAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate, productsPageQuery.FavouriteProductsOfUser.Value);
+                        }
                         break;
                     case "cheapest":
-                        pagedProducts = await _unitOfWork.
-                           ProductRepository.
-                           GetPagedListFilterAndOrderAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.Price);
+                        if (productsPageQuery.FavouriteProductsOfUser == null)
+                        {
+                            pagedProducts = await _unitOfWork.
+                               ProductRepository.
+                               GetPagedListFilterAndOrderAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.Price);
+                        }
+                        else
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderFavouriteAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate, productsPageQuery.FavouriteProductsOfUser.Value);
+                        }
                         break;
                     case "priciest":
-                        pagedProducts = await _unitOfWork.
-                            ProductRepository.
-                            GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.Price);
+                        if (productsPageQuery.FavouriteProductsOfUser == null)
+                        {
+                            pagedProducts = await _unitOfWork.
+                               ProductRepository.
+                               GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.Price);
+                        }
+                        else
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderDescFavouriteAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate, productsPageQuery.FavouriteProductsOfUser.Value);
+                        }
                         break;
                     default:
-                        pagedProducts = await _unitOfWork.
-                            ProductRepository.
-                            GetPagedListFilterAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp);
+                        if (productsPageQuery.FavouriteProductsOfUser == null)
+                        {
+                            pagedProducts = await _unitOfWork.
+                               ProductRepository.
+                               GetPagedListFilterAndOrderDescAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.Price);
+                        }
+                        else
+                        {
+                            pagedProducts = await _unitOfWork.
+                                ProductRepository.
+                                GetPagedListFilterAndOrderDescFavouriteAsync(productsPageQuery.Page, productsPageQuery.PageSize, exp, p => p.CreatedDate, productsPageQuery.FavouriteProductsOfUser.Value);
+                        }
                         break;
                 }
 

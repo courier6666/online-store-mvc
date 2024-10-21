@@ -11,6 +11,7 @@ namespace Store.WebApplicationMVC.ViewModel
         public string? Category { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
+        public bool AreFavourite { get; set; }
         public string? ProductName { get; set; }
         public IEnumerable<string> AllCategories { get; set; }
         public string? CurrentValueSortedBy { get; set; }

@@ -181,5 +181,19 @@ namespace Store.WebApplicationMVC.Controllers
                 Order = foundOrder,
             });
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid orderId)
+        {
+            try
+            {
+                await _adminOrderService.DeleteOrderAsync(orderId, _userContext.UserId.Value);
+            }
+            catch (InvalidOperationException ex)
+            {
+                this.ModelState.AddModelError("", ex.Message);
+            }
+
+            return RedirectToAction("Index");
+        }
     }
 }

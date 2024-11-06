@@ -680,7 +680,6 @@ namespace Store.Application.Services
             {
                 _unitOfWork.BeginTransaction();
 
-
                 IUser foundAdmin = await _unitOfWork.UserRepository.GetByIdAsync(adminId);
 
                 if (foundAdmin == null)
@@ -690,8 +689,21 @@ namespace Store.Application.Services
                     throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
 
                 Order foundOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
-                _unitOfWork.OrderRepository.Delete(foundOrder);
 
+                if (foundOrder == null)
+                    throw new InvalidOperationException($"Order by id '{orderId}' not found!");
+
+                if (foundOrder.Status != OrderStatus.Completed
+                    && foundOrder.Status != OrderStatus.CancelledByAdmin
+                    && foundOrder.Status != OrderStatus.CancelledByUser)
+                {
+                    throw new InvalidOperationException($"Order by id '{orderId}' must be first completed or cancelled before deletion.");
+                }
+
+                _unitOfWork.OrderRepository.Delete(foundOrder);
+                await _unitOfWork.CommitAsync();
+
+                _unitOfWork.BeginTransaction();
                 var productsForDeletion = await _unitOfWork.ProductRepository.GetArchivedProductsThatAreNotIncludedInOrdersAsync();
                 _unitOfWork.ProductRepository.DeleteRange(productsForDeletion);
 

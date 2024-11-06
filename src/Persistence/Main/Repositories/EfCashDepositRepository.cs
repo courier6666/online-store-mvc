@@ -24,6 +24,11 @@ namespace Store.Persistence.Main.Repositories
             _context.CashDeposits.Remove(entity);
         }
 
+        public void DeleteRange(IEnumerable<CashDeposit> entities)
+        {
+            _context.CashDeposits.RemoveRange(entities);
+        }
+
         public void Dispose()
         {
             _context = null;

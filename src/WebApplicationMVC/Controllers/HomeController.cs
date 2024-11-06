@@ -29,8 +29,18 @@ namespace Store.WebApplicationMVC.Controllers
             string? productName = null,
             bool favouriteOnly = false,
             int page = 1,
-            string? order = null)
+            string? order = null,
+            bool? isRemovedFromPageStore = null)
         {
+            bool isUserAdmin = _userContext.IsAuthenticated &&
+                _userContext.UserId != null &&
+                ((await _userService.GetRolesByUserIdAsync(_userContext.UserId.Value))?.Contains(Roles.Admin) ?? false);
+
+            // in case url query with isRemovedFromPageStore parameter is submitted, check if user is logged in and is an admin.
+            if (isRemovedFromPageStore.HasValue && isRemovedFromPageStore.Value && !isUserAdmin)
+                return RedirectToAction("Login", "Account");
+
+
             if (string.IsNullOrEmpty(category)) category = null;
             var products = await _productService.GetPagedProductsAsync(new ProductsPageQuery()
             {
@@ -41,7 +51,8 @@ namespace Store.WebApplicationMVC.Controllers
                 PageSize = PageSize,
                 SortOrder = order,
                 ProductName = productName,
-                FavouriteProductsOfUser = favouriteOnly && _userContext.IsAuthenticated ? _userContext.UserId.Value : null
+                FavouriteProductsOfUser = favouriteOnly && _userContext.IsAuthenticated ? _userContext.UserId.Value : null,
+                IsRemovedFromPageStore = isRemovedFromPageStore
             });
 
             HashSet<Guid> favouriteProducts = new HashSet<Guid>();
@@ -79,9 +90,7 @@ namespace Store.WebApplicationMVC.Controllers
                 ProductName = productName,
                 IsUserAuthenticated = _userContext.IsAuthenticated &&
                     _userContext.UserId != null,
-                IsUserAdmin = _userContext.IsAuthenticated &&
-                    _userContext.UserId != null &&
-                    ((await _userService.GetRolesByUserIdAsync(_userContext.UserId.Value))?.Contains(Roles.Admin) ?? false)
+                IsUserAdmin = isUserAdmin
             };
 
             return View(productHomeViewModel);
@@ -91,16 +100,24 @@ namespace Store.WebApplicationMVC.Controllers
             decimal? minPrice,
             decimal? maxPrice,
             bool favouriteOnly,
-            string? productName)
+            string? productName,
+            bool? isRemovedFromPageStore)
         {
-            return RedirectToAction("Index", new { category, minPrice, maxPrice, productName, favouriteOnly});
+            return RedirectToAction("Index", new { category, minPrice, maxPrice, productName, favouriteOnly, isRemovedFromPageStore });
         }
         [HttpPost]
-        public IActionResult FindByProductName(string productName)
+        public async Task<IActionResult> FindByProductName(string productName)
         {
             if (string.IsNullOrEmpty(productName))
                 return RedirectToAction("Index");
-            return RedirectToAction("Index", new { productName });
+
+            bool isAdmin = _userContext.IsAuthenticated &&
+                    _userContext.UserId != null &&
+                    ((await _userService.GetRolesByUserIdAsync(_userContext.UserId.Value))?.Contains(Roles.Admin) ?? false);
+
+            //If user is not an admin, then archived products will not be shown.
+            bool isRemovedFromPageStore = !isAdmin;
+            return RedirectToAction("Index", new { productName , isRemovedFromPageStore});
         }
         [HttpPost]
         public async Task<IActionResult> Index([FromForm] ProductHomeViewModel productHomeViewModel)

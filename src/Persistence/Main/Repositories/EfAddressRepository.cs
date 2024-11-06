@@ -24,6 +24,11 @@ namespace Store.Persistence.Main.Repositories
             _context.Addresses.Remove(entity);
         }
 
+        public void DeleteRange(IEnumerable<Address> entities)
+        {
+            _context.Addresses.RemoveRange(entities);
+        }
+
         public void Dispose()
         {
             _context = null;

@@ -188,20 +188,41 @@
                             <td>
                                 <form asp-controller="Cart" asp-action="AddToCart" method="post">
                                     <input type="hidden" name="productId" value="@product.Id" />
-                                    <button type="submit" class="btn text-white bg-black m-1">
+                                    <button type="submit" class="btn text-white bg-black w-100">
                                         Add to cart
                                     </button>
                                 </form>
-                                <div class="d-flex flex-column">
-                                    @foreach (var (controller, action, name) in controllerActionAndNameOfProductAction)
-                                    {
-                                        <a asp-controller="@controller"
-                                           asp-action="@action"
-                                           asp-route-productId="@product.Id"
-                                           asp-route-returnUrl="@returnUrl"
-                                           class="btn text-white bg-black m-1">@name</a>
-                                    }
-                                </div>
+                                @if (Model.IsUserAdmin)
+                                {
+                                    <div class="d-flex flex-column">
+                                        <a asp-controller="ProductAdmin"
+                                        asp-action="Edit"
+                                        asp-route-productId="@product.Id"
+                                        asp-route-returnUrl="@returnUrl"
+                                        class="btn text-white bg-black mt-1 mb-1">Edit</a>
+
+                                        @if(product.IsRemovedFromPageStore)
+                                        {
+                                            <form asp-controller="ProductAdmin" asp-action="RestoreProduct" method="post">
+                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                                <button type="submit" class="btn text-white bg-blackw-100">
+                                                    Restore
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="ProductAdmin" asp-action="RemoveProduct" method="post">
+                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                                <button type="submit" class="btn text-white bg-black w-100">
+                                                    Remove
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                }
                             </td>
                         </tr>
                     }

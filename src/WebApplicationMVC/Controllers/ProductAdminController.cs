@@ -91,5 +91,17 @@ namespace Store.WebApplicationMVC.Controllers
             await _productService.DeleteAsync(product.Id.Value);
             return Redirect(product.ReturnUrl);
         }
+        [HttpPost]
+        public async Task<IActionResult> RemoveProduct(Guid productId, string returnUrl = "/")
+        {
+            await _productService.RemoveProductFromPageStoreAsync(productId);
+            return Redirect(returnUrl);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RestoreProduct(Guid productId, string returnUrl = "/")
+        {
+            await _productService.RestoreProductAsync(productId);
+            return Redirect(returnUrl);
+        }
     }
 }

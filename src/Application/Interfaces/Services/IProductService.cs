@@ -1,5 +1,6 @@
 ﻿using Store.Application.DataTransferObjects;
 using Store.Application.Queries;
+using Store.Domain.Entities;
 using Store.Domain.PagedLists;
 
 namespace Store.Application.Interfaces.Services
@@ -17,5 +18,8 @@ namespace Store.Application.Interfaces.Services
         Task<(bool isFavourite, Guid productId)[]> AreFavouriteProductsAsync(Guid userId, Guid[] productIds);
         Task RemoveFavouriteProductForUserAsync(Guid userId, Guid productId);
         Task AddFavouriteProductForUserAsync(Guid userId, Guid productId);
+        Task RemoveProductFromPageStoreAsync(Guid productId);
+        Task RestoreProductAsync(Guid productId);
+        Task<IEnumerable<Product>> GetArchivedProductsThatAreNotIncludedInOrdersAsync();
     }
 }

@@ -7,6 +7,7 @@
         public string Category { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
+        public bool IsRemovedFromPageStore { get; set; }
         public DateTime DateOfCreation { get; set; }
     }
 }

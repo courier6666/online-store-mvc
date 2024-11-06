@@ -666,5 +666,42 @@ namespace Store.Application.Services
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// When order is being deleted and there are no other orders that point to archived products, these archived products are being deleted as well.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="adminId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task DeleteOrderAsync(Guid orderId, Guid adminId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+
+
+                IUser foundAdmin = await _unitOfWork.UserRepository.GetByIdAsync(adminId);
+
+                if (foundAdmin == null)
+                    throw new InvalidOperationException($"Admin by id '{adminId}' not found!");
+
+                if (!foundAdmin.Roles.Contains(Roles.Admin))
+                    throw new InvalidOperationException($"Found user by id '{adminId}' is not an administrator.");
+
+                Order foundOrder = await _unitOfWork.OrderRepository.GetByIdAsync(orderId);
+                _unitOfWork.OrderRepository.Delete(foundOrder);
+
+                var productsForDeletion = await _unitOfWork.ProductRepository.GetArchivedProductsThatAreNotIncludedInOrdersAsync();
+                _unitOfWork.ProductRepository.DeleteRange(productsForDeletion);
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
     }
 }

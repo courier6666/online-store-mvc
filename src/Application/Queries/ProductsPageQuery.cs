@@ -10,5 +10,6 @@
         public string? SortOrder { get; set; }
         public string? ProductName { get; set; }
         public Guid? FavouriteProductsOfUser { get; set; }
+        public bool? IsRemovedFromPageStore { get; set; }
     }
 }

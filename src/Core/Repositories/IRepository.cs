@@ -27,6 +27,11 @@
         /// </summary>
         /// <param name="entity">Entity that is deleted.</param>
         void Delete(TObject entity);
+        /// <summary>
+        /// Used for deleting multiple entities at once.
+        /// </summary>
+        /// <param name="entities"> Entities provided for deletion.</param>
+        void DeleteRange(IEnumerable<TObject> entities);
     }
     /// <summary>
     /// Used to get Entity <typeparamref name="TObject"/> by id

@@ -31,6 +31,11 @@ namespace Store.Persistence.Main.Repositories
                 _context.Users.Remove(user);
         }
 
+        public void DeleteRange(IEnumerable<IUser> entities)
+        {
+            _context.RemoveRange(entities);
+        }
+
         public void Dispose()
         {
             _context = null;

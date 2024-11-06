@@ -29,6 +29,6 @@ namespace Store.Application.Interfaces.Services
         Task CompleteOrderAsync(Guid orderId, Guid adminId);
         Task<PagedList<OrderDto>> GetPagedOrdersAsync(OrdersAdminPageQuery productsPageQuery);
         Task<OrderDto> GetOrderAsync(Guid orderId);
-
+        Task DeleteOrderAsync(Guid orderId, Guid adminId);
     }
 }

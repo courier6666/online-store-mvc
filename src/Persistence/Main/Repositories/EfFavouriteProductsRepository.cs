@@ -36,6 +36,11 @@ namespace Store.Persistence.Main.Repositories
             _context.Remove(entity);
         }
 
+        public void DeleteRange(IEnumerable<FavouriteProduct> entities)
+        {
+            _context.RemoveRange(entities);
+        }
+
         public void Dispose()
         {
             _context?.Dispose();

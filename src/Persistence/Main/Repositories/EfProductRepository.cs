@@ -118,5 +118,21 @@ namespace Store.Persistence.Main.Repositories
                 Distinct().
                 ToListAsync();
         }
+        public async Task<IEnumerable<Product>> GetArchivedProductsThatAreNotIncludedInOrdersAsync()
+        {
+            return await _context.Products.Include(p => p.OrderProductDetails).
+                Where(p => p.IsRemovedFromPageStore).
+                Where(p => !p.OrderProductDetails.Any()).
+                ToListAsync();
+        }
+        public void DeleteRange(IEnumerable<Product> entities)
+        {
+            _context.RemoveRange(entities);
+        }
+
+        public async Task<bool> IsProductIncludedInOrderAsync(Guid productId)
+        {
+            return _context.OrderProductDetails.Where(opd => opd.ProductId == productId).Any();
+        }
     }
 }

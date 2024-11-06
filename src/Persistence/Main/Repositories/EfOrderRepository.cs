@@ -175,5 +175,10 @@ namespace Store.Persistence.Main.Repositories
                 Include(o => o.ProductDetails).
                     ThenInclude(pd => pd.Product).OrderByDescending(selector).AsQueryable(), page, pageSize);
         }
+
+        public void DeleteRange(IEnumerable<Order> entities)
+        {
+            _context.RemoveRange(entities);
+        }
     }
 }

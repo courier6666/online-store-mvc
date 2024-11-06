@@ -42,6 +42,13 @@ namespace Store.Persistence.Main.EntityConfigurations
                 HasDefaultValue(0.00m).
                 HasColumnType("decimal(12,2)").
                 IsRequired();
+
+            builder.Property(p => p.IsRemovedFromPageStore).
+                IsRequired().
+                HasDefaultValue(false);
+
+            builder.HasMany(p => p.OrderProductDetails).
+                WithOne(opd => opd.Product);
         }
     }
 }

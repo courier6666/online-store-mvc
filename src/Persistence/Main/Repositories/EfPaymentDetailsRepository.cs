@@ -54,5 +54,10 @@ namespace Store.Persistence.Main.Repositories
         {
             return await _context.PaymentDetails.Where(filter).ToListAsync();
         }
+
+        public void DeleteRange(IEnumerable<PaymentDetails> entities)
+        {
+            _context.RemoveRange(entities);
+        }
     }
 }

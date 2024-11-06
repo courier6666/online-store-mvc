@@ -7,6 +7,7 @@ using Store.Domain.Entities.Interfaces;
 using Store.Domain.Entities.Model;
 using Store.Domain.PagedLists;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Store.Application.Services
 {
@@ -147,11 +148,11 @@ namespace Store.Application.Services
             {
                 _unitOfWork.BeginTransaction();
 
-
                 Expression<Func<Product, bool>> exp = p =>
                 (productsPageQuery.Category == null || p.Category == productsPageQuery.Category) &&
                 (productsPageQuery.MinPrice == null || p.Price >= productsPageQuery.MinPrice) &&
                 (productsPageQuery.MaxPrice == null || p.Price <= productsPageQuery.MaxPrice) &&
+                (productsPageQuery.IsRemovedFromPageStore == null || p.IsRemovedFromPageStore == productsPageQuery.IsRemovedFromPageStore) &&
                 (productsPageQuery.ProductName == null || p.Name.Contains(productsPageQuery.ProductName));
 
                 PagedList<Product> pagedProducts = PagedList<Product>.Empty();
@@ -302,6 +303,16 @@ namespace Store.Application.Services
             {
                 _unitOfWork.BeginTransaction();
 
+                Product foundProduct = await _unitOfWork.ProductRepository.GetByIdAsync(productId);
+
+                if (foundProduct == null)
+                    throw new InvalidOperationException($"Product by id '{productId}' not found.");
+
+                IUser foundUser = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+
+                if (foundUser == null)
+                    throw new InvalidOperationException($"User by id '{userId}' not found.");
+
                 _unitOfWork.FavoriteProductsRepository.Add(new FavouriteProduct()
                 {
                     ProductId = productId,
@@ -315,6 +326,59 @@ namespace Store.Application.Services
                 _unitOfWork.Rollback();
                 throw ex;
             }
+        }
+
+        public async Task RemoveProductFromPageStoreAsync(Guid productId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                Product foundProduct = await _unitOfWork.ProductRepository.GetByIdAsync(productId);
+
+                if (foundProduct == null)
+                    throw new InvalidOperationException($"Product by id '{productId}' not found.");
+
+                if (!await _unitOfWork.ProductRepository.IsProductIncludedInOrderAsync(productId))
+                {
+                    _unitOfWork.ProductRepository.Delete(foundProduct);
+                }
+                else
+                {
+                    foundProduct.IsRemovedFromPageStore = true;
+                    _unitOfWork.ProductRepository.Update(foundProduct);
+                }
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
+        public async Task RestoreProductAsync(Guid productId)
+        {
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                Product foundProduct = await _unitOfWork.ProductRepository.GetByIdAsync(productId);
+
+                if (foundProduct == null)
+                    throw new InvalidOperationException($"Product by id '{productId}' not found.");
+
+                foundProduct.IsRemovedFromPageStore = false;
+                _unitOfWork.ProductRepository.Update(foundProduct);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw ex;
+            }
+        }
+
+        public async Task<IEnumerable<Product>> GetArchivedProductsThatAreNotIncludedInOrdersAsync()
+        {
+            return await _unitOfWork.ProductRepository.GetArchivedProductsThatAreNotIncludedInOrdersAsync();
         }
     }
 }

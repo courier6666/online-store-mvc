@@ -53,10 +53,19 @@ namespace Store.WebApplicationMVC.Controllers
             });
         }
         [Authorize]
+        [HttpPost]
         public async Task<IActionResult> CreateOrderFromCart()
         {
-            await _userOrderService.CreateOrderAsync(_userContext.UserId.Value, _cartService.Lines.ToArray());
-            _cartService.Clear();
+            try
+            {
+                await _userOrderService.CreateOrderAsync(_userContext.UserId.Value, _cartService.Lines.ToArray());
+                _cartService.Clear();
+            }
+            catch (Exception ex)
+            {
+                TempData["CartError"] = ex.Message;
+                return RedirectToAction("Index", "Cart");
+            }
             return RedirectToAction("Index", new { page = 1 });
         }
         [Authorize]

@@ -299,7 +299,7 @@ namespace Store.Application.Services
                 {
                     Product foundProduct = await _unitOfWork.ProductRepository.GetByIdAsync(product.Product.Id.Value);
                     if (foundProduct == null)
-                        throw new InvalidOperationException($"Product by id '{product.Product.Id.Value}' not found!");
+                        throw new InvalidOperationException($"Product by id '{product.Product.Id.Value}' not found! Try to remove item from cart!");
 
                     OrderProductDetail productDetail = _customMapper.Map<ProductDetailsDto, OrderProductDetail>(product);
                     productDetail.Product = null;

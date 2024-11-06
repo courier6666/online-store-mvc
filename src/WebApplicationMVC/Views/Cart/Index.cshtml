@@ -47,7 +47,12 @@
     @if (Model.ProductDetails.Any())
     {
         <div>
-            <a asp-controller="Order" asp-action="CreateOrderFromCart" class="btn border text-white bg-black">Order</a>
+            <form asp-controller="Order" asp-action="CreateOrderFromCart" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <button type="submit" class="btn text-white bg-black">
+                    Order
+                </button>
+            </form>
         </div>
     }
 </div>

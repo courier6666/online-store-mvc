@@ -359,5 +359,6 @@ MigrationBackup/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
 
-# Ignore libraries in wwwroot/lib
+# Ignore libraries in wwwroot
 **/wwwroot/lib
+**/wwwroot/font-awesome

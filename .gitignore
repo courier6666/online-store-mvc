@@ -362,3 +362,4 @@ MigrationBackup/
 # Ignore libraries in wwwroot
 **/wwwroot/lib
 **/wwwroot/font-awesome
+**/wwwroot/bootstrap

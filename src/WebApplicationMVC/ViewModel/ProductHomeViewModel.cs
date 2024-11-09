@@ -17,5 +17,6 @@ namespace Store.WebApplicationMVC.ViewModel
         public string? CurrentValueSortedBy { get; set; }
         public bool IsUserAuthenticated { get; set; }
         public bool IsUserAdmin { get; init; }
+        public bool? IsRemovedFromPageStore { get; set; }
     }
 }

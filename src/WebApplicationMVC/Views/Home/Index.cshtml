@@ -106,12 +106,44 @@
                 </div>
                 <div style="height: 1px;" class="border mt-2 mb-2"></div>
                 <div>
-                    <label class="control-label" asp-for="@Model.Category"><b>Favourite</b></label>
+                    <label class="control-label" asp-for="@Model.AreFavourite"><b>Favourite</b></label>
                     <div class="form-group mt-2 mb-2">
                         <input class="form-check-input" asp-for="@Model.AreFavourite" name="favouriteOnly" />
                         <label class="form-check-label" asp-for="@Model.AreFavourite">Only favourite products</label>
                     </div>
                 </div>
+                @if (Model.IsUserAdmin)
+                {
+                    <div style="height: 1px;" class="border mt-2 mb-2"></div>
+                    <div>
+                        <label class="control-label" asp-for="@Model.IsRemovedFromPageStore"><b>Removed from store</b></label>
+                        <div class="form-group mt-2 mb-2">
+                            @{
+                                var optionsForSelect = new (bool IsSelected, bool? Value, string Label)[]
+                                    {
+                        (false, false, "No"),
+                        (false, true, "Yes"),
+                        (false, null, "Any")
+                                    };
+
+                                optionsForSelect[Array.FindIndex(optionsForSelect, o => o.Value == Model.IsRemovedFromPageStore)].IsSelected = true;
+                            }
+                            <select name="isRemovedFromPageStore" class="form-control">
+                                @foreach (var option in optionsForSelect)
+                                {
+                                    @if (option.IsSelected)
+                                    {
+                                        <option selected value="@option.Value">@option.Label</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@option.Value">@option.Label</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
                 <input type="hidden" asp-for="@Model.PagingInfo.Page" />
                 <button type="submit" class="btn btn-outline-dark">
                     Apply
@@ -140,14 +172,17 @@
                            sorting-criteria-not-selected-class="@unselectedOrderByClass">@allSortCriteriaNames[i]</a>
                     }
                 </div>
-                <div page-model="@Model.PagingInfo" page-route=@currentRoute
-                     page-arrow-class="btn"
-                     page-class="btn p-1"
-                     page-selected-class="btn bg-black text-white p-1"
-                     class="d-flex flex-row shadow-sm m-2"
-                     number-of-pages-from-selected-page-visible="3"
-                     page-left-symbol="fa-solid fa-angle-left black"
-                     page-right-symbol="fa-solid fa-angle-right"></div>
+                @if (Model.Products.Any())
+                {
+                    <div page-model="@Model.PagingInfo" page-route=@currentRoute
+                         page-arrow-class="btn"
+                         page-class="btn p-1"
+                         page-selected-class="btn bg-black text-white p-1"
+                         class="d-flex flex-row shadow-sm m-2"
+                         number-of-pages-from-selected-page-visible="3"
+                         page-left-symbol="fa-solid fa-angle-left black"
+                         page-right-symbol="fa-solid fa-angle-right"></div>
+                }
             </div>
             <table class="table table-striped table-bordered shadow">
                 <thead class="table-dark">
@@ -165,7 +200,7 @@
                     {
                         <tr>
                             <td>
-                                
+
                                 @if (Model.IsUserAuthenticated)
                                 {
                                     <span onclick="onFavouriteClick('product@(product.Id)')" id="product@(product.Id)" data-isfav="@Model.FavouriteProductsForPage.Contains(product.Id.Value)">
@@ -179,7 +214,7 @@
                                     </a>
                                 }
                                 <span>@product.Name</span>
-                                
+
                             </td>
                             <td>@product.Category</td>
                             <td>@product.Description</td>
@@ -196,12 +231,12 @@
                                 {
                                     <div class="d-flex flex-column">
                                         <a asp-controller="ProductAdmin"
-                                        asp-action="Edit"
-                                        asp-route-productId="@product.Id"
-                                        asp-route-returnUrl="@returnUrl"
-                                        class="btn text-white bg-black mt-1 mb-1">Edit</a>
+                                           asp-action="Edit"
+                                           asp-route-productId="@product.Id"
+                                           asp-route-returnUrl="@returnUrl"
+                                           class="btn text-white bg-black mt-1 mb-1">Edit</a>
 
-                                        @if(product.IsRemovedFromPageStore)
+                                        @if (product.IsRemovedFromPageStore)
                                         {
                                             <form asp-controller="ProductAdmin" asp-action="RestoreProduct" method="post">
                                                 <input type="hidden" name="productId" value="@product.Id" />

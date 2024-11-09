@@ -90,7 +90,8 @@ namespace Store.WebApplicationMVC.Controllers
                 ProductName = productName,
                 IsUserAuthenticated = _userContext.IsAuthenticated &&
                     _userContext.UserId != null,
-                IsUserAdmin = isUserAdmin
+                IsUserAdmin = isUserAdmin,
+                IsRemovedFromPageStore = isRemovedFromPageStore
             };
 
             return View(productHomeViewModel);
@@ -101,7 +102,7 @@ namespace Store.WebApplicationMVC.Controllers
             decimal? maxPrice,
             bool favouriteOnly,
             string? productName,
-            bool? isRemovedFromPageStore)
+            bool? isRemovedFromPageStore = null)
         {
             return RedirectToAction("Index", new { category, minPrice, maxPrice, productName, favouriteOnly, isRemovedFromPageStore });
         }
